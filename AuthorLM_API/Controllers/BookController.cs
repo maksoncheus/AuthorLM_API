@@ -66,5 +66,36 @@ namespace AuthorLM_API.Controllers
             }
             return BadRequest();
         }
+        [HttpGet]
+        public async Task<IActionResult> GetBookContent(int id)
+        {
+            Book? book = await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
+            if (book != null)
+            {
+                byte[] content = await System.IO.File.ReadAllBytesAsync(book.ContentPath);
+                string mimeType = MimeKit.MimeTypes.GetMimeType(book.ContentPath);
+
+                System.Net.Mime.ContentDisposition cd = new System.Net.Mime.ContentDisposition
+                {
+                    FileName = string.Join("/", book.ContentPath.Split("/").Select(s => System.Net.WebUtility.UrlEncode(s))),
+                    Inline = false
+                };
+                Response.Headers.Append("Content-Disposition", cd.ToString());
+                return File(content, mimeType, System.IO.Path.GetFileName(book.ContentPath));
+            }
+            return NotFound();
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteBook(int id)
+        {
+            Book? book = await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
+            if(book != null)
+            {
+                _context.Books.Remove(book);
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            return BadRequest();
+        }
     }
 }

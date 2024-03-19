@@ -27,10 +27,12 @@ namespace AuthorLM_API.Services
                 CoverImagePath = publishBookRequest.CoverImagePath,
                 ContentPath = publishBookRequest.ContentPath
             };
+            await SaveBookContentAsync(publishBookRequest);
+            await SaveBookCoverImageAsync
             return book;
         }
 
-        public async Task SaveBookContentAsync(PublishBookViewModel publishBookRequest)
+        private async Task SaveBookContentAsync(PublishBookViewModel publishBookRequest)
         {
             var uniqueFileName = FileHelper.GetUniqueFileName(publishBookRequest.Content.FileName);
 
@@ -45,7 +47,7 @@ namespace AuthorLM_API.Services
             return;
         }
 
-        public async Task SaveBookCoverImageAsync(PublishBookViewModel publishBookRequest)
+        private async Task SaveBookCoverImageAsync(PublishBookViewModel publishBookRequest)
         {
             if(publishBookRequest.CoverImagePath == null)
             {
