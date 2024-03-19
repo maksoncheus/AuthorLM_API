@@ -58,9 +58,6 @@ namespace AuthorLM_API.Controllers
             if (publishViewModel.CoverImage != null)
                 if (!_bookCoverAllowedExtensions.Any(x => x == Path.GetExtension(publishViewModel.CoverImage.FileName)))
                     return BadRequest($"Only {string.Join(", ", _bookCoverAllowedExtensions)} extensions allowed for cover image");
-            await _publishBookService.SaveBookCoverImageAsync(publishViewModel);
-            await _publishBookService.SaveBookContentAsync(publishViewModel);
-
             string? username = HttpContext.User?.Identity?.Name;
             if (username != null)
             {
@@ -71,6 +68,8 @@ namespace AuthorLM_API.Controllers
 
                     if (user != null && genre != null)
                     {
+                        await _publishBookService.SaveBookCoverImageAsync(publishViewModel);
+                        await _publishBookService.SaveBookContentAsync(publishViewModel);
                         Book book = await _publishBookService.PublishBookAsync(publishViewModel, user, genre);
                         await _context.AddAsync(book);
                         await _context.SaveChangesAsync();
