@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace AuthorLM_API.Data.Encription
+namespace AuthorLM_API.Data.Encryption
 {
     public static class PasswordCipher
     {

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AuthorLM_API.Interfaces;
 using AuthorLM_API.Data.Entities;
-using AuthorLM_API.Data.Encription;
+using AuthorLM_API.Data.Encryption;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 namespace AuthorLM_API.Controllers
@@ -68,8 +68,8 @@ namespace AuthorLM_API.Controllers
 
                     if (user != null && genre != null)
                     {
-                        await _publishBookService.SaveBookCoverImageAsync(publishViewModel);
-                        await _publishBookService.SaveBookContentAsync(publishViewModel);
+                        //await _publishBookService.SaveBookCoverImageAsync(publishViewModel);
+                        //await _publishBookService.SaveBookContentAsync(publishViewModel);
                         Book book = await _publishBookService.PublishBookAsync(publishViewModel, user, genre);
                         await _context.AddAsync(book);
                         await _context.SaveChangesAsync();
@@ -99,9 +99,37 @@ namespace AuthorLM_API.Controllers
                     Inline = false
                 };
                 Response.Headers.Append("Content-Disposition", cd.ToString());
-                return File(content, mimeType, System.IO.Path.GetFileName(book.ContentPath));
+                return File(content, mimeType, Path.GetFileName(book.ContentPath));
             }
             return NotFound();
+        }
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> DeleteBook(int id)
+        {
+            Book? book = await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
+            if (book != null)
+            {
+                string? username = HttpContext.User?.Identity?.Name;
+                if (username != null)
+                {
+                    if (username == book.Author.Username || HttpContext.User.IsInRole("Admin"))
+                    {
+                        try
+                        {
+                            Directory.Delete(Path.GetDirectoryName(book.ContentPath), true);
+                            _context.Books.Remove(book);
+                            await _context.SaveChangesAsync();
+                            return Ok("Book removed succesfully");
+                        }
+                        catch (Exception ex)
+                        {
+                            return BadRequest(ex.Message);
+                        }
+                    }
+                }
+            }
+            return NotFound("Book with this ID is not found");
         }
     }
 }

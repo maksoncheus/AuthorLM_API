@@ -1,4 +1,4 @@
-﻿using AuthorLM_API.Data.Encription;
+﻿using AuthorLM_API.Data.Encryption;
 using AuthorLM_API.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

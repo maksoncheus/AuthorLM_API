@@ -1,21 +1,30 @@
-﻿using AuthorLM_API.Data.Encription;
+﻿using AuthorLM_API.Data.Encryption;
 using AuthorLM_API.Data.Entities;
-using Microsoft.AspNetCore.Identity;
-using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuthorLM_API.Data
 {
     public class DBInitializer
     {
-        public static async Task InitializeAsync(ApplicationContext context)
-        {
-            List<string> roles = new List<string>()
+        private static readonly List<string> _roles = new List<string>()
             {
                 "User",
                 "Admin",
                 "Guest"
             };
-            foreach (string role in roles)
+        private static readonly string _adminUsername = "SuperMegaAdmin";
+        private static readonly string _adminEmail = "lyubaAdmin@mail.ru";
+        private static readonly string _adminPassword = "adminSecurePassword";
+
+        public static async Task InitializeAsync(ApplicationContext context, IWebHostEnvironment environment)
+        {
+            await AddRolesAsync(context);
+            await AddAdminUserAsync(context);
+            await DeleteFoldersWithNoBooks(context, environment);
+        }
+        private static async Task AddRolesAsync(ApplicationContext context)
+        {
+            foreach (string role in _roles)
             {
                 if (!context.Roles.Any(r => r.Name == role))
                 {
@@ -23,19 +32,33 @@ namespace AuthorLM_API.Data
                 }
             }
             await context.SaveChangesAsync();
-            if (!context.Users.Any(x => x.Username == "SuperMegaAdmin"))
+        }
+        private static async Task AddAdminUserAsync(ApplicationContext context)
+        {
+            if (!context.Users.Any(x => x.Username == _adminUsername))
             {
                 Role role = context.Roles.First(r => r.Name == "Admin");
-                string adminpassword = PasswordCipher.Encrypt("adminSecurePassword");
+                string adminpassword = PasswordCipher.Encrypt(_adminPassword);
                 context.Users.Add(new User()
                 {
-                    Username = "SuperMegaAdmin",
+                    Username = _adminUsername,
                     Password = adminpassword,
                     Role = role,
-                    EmailAddress = "lyubaAdmin@mail.ru"
+                    EmailAddress = _adminEmail
                 });
             }
             await context.SaveChangesAsync();
+        }
+        private static async Task DeleteFoldersWithNoBooks(ApplicationContext context, IWebHostEnvironment _environment)
+        {
+            List<string> directories = Directory.EnumerateDirectories(Path.Combine(_environment.WebRootPath, "books")).ToList();
+            foreach (string directory in directories)
+            {
+                if (await context.Books.FirstOrDefaultAsync(b => b.Title == directory) == null)
+                {
+                    Directory.Delete(directory, true);
+                }
+            }
         }
     }
 }

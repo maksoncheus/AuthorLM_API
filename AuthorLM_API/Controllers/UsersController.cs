@@ -1,5 +1,5 @@
 using AuthorLM_API.Data;
-using AuthorLM_API.Data.Encription;
+using AuthorLM_API.Data.Encryption;
 using AuthorLM_API.Data.Entities;
 using AuthorLM_API.ViewModels;
 using Microsoft.AspNetCore.Authorization;

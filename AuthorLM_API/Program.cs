@@ -86,7 +86,8 @@ namespace AuthorLM_API
                 try
                 {
                     var applicationContext = services.GetRequiredService<ApplicationContext>();
-                    await DBInitializer.InitializeAsync(applicationContext);
+                    var environment = services.GetRequiredService<IWebHostEnvironment>();
+                    await DBInitializer.InitializeAsync(applicationContext, environment);
                 }
                 catch (Exception ex)
                 {

@@ -17,8 +17,11 @@ namespace AuthorLM_API.Services
         //Call after saving to wwwroot!!!
         public async Task<Book> PublishBookAsync(PublishBookViewModel publishBookRequest, User author, Genre genre)
         {
-        DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
-            Book book = new() {
+            await SaveBookContentAsync(publishBookRequest);
+            await SaveBookCoverImageAsync(publishBookRequest);
+            DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
+            Book book = new()
+            {
                 Title = publishBookRequest.Title,
                 Description = publishBookRequest.Description,
                 Author = author,
@@ -30,7 +33,7 @@ namespace AuthorLM_API.Services
             return book;
         }
 
-        public async Task SaveBookContentAsync(PublishBookViewModel publishBookRequest)
+        private async Task SaveBookContentAsync(PublishBookViewModel publishBookRequest)
         {
             var uniqueFileName = FileHelper.GetUniqueFileName(publishBookRequest.Content.FileName);
 
@@ -48,9 +51,9 @@ namespace AuthorLM_API.Services
             return;
         }
 
-        public async Task SaveBookCoverImageAsync(PublishBookViewModel publishBookRequest)
+        private async Task SaveBookCoverImageAsync(PublishBookViewModel publishBookRequest)
         {
-            if(publishBookRequest.CoverImagePath == null)
+            if (publishBookRequest.CoverImage == null)
             {
                 publishBookRequest.CoverImagePath = Path.Combine(_environment.WebRootPath, "src", "images", "bookNoCover.png");
                 return;
