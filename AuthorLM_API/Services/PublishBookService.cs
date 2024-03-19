@@ -39,7 +39,10 @@ namespace AuthorLM_API.Services
             var filePath = Path.Combine(uploads, uniqueFileName);
 
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-            await publishBookRequest.Content.CopyToAsync(new FileStream(filePath, FileMode.Create));
+            using (FileStream stream = new(filePath, FileMode.Create))
+            {
+                await publishBookRequest.Content.CopyToAsync(stream);
+            }
 
             publishBookRequest.ContentPath = filePath;
             return;
