@@ -10,6 +10,7 @@ namespace AuthorLM_API.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Book> Books { get; set; }
+        public DbSet<Comment> Comments { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseLazyLoadingProxies();

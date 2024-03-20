@@ -19,7 +19,7 @@ namespace AuthorLM_API.Services
         {
             await SaveBookContentAsync(publishBookRequest);
             await SaveBookCoverImageAsync(publishBookRequest);
-            DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
+            DateOnly currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
             Book book = new()
             {
                 Title = publishBookRequest.Title,
