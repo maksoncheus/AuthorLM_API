@@ -2,11 +2,61 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AuthorLM.Client.Views.BookPage"
-             Title="BookPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="BookPage"
+             NavigationPage.HasNavigationBar="False">
+    <RefreshView
+    Command="{Binding RefreshPage}"
+    IsRefreshing="{Binding IsRefreshing}"
+    >
+        <ScrollView BackgroundColor="#bfa0a0" Orientation="Vertical">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.1*"/>
+                    <RowDefinition Height="0.9*"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <FlexLayout Margin="0,0,0,15" Grid.Row="0" AlignItems="Center" BackgroundColor="#a27676">
+                    <ImageButton FlexLayout.Grow="1" Margin="7,0,0,0" Command="{Binding Back}" Source="back.svg" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="Start"></ImageButton>
+                </FlexLayout>
+                <VerticalStackLayout Grid.Row="1" Spacing="25" Padding="15">
+                    <Grid HeightRequest="300" HorizontalOptions="Fill">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.RowSpan="4" BackgroundColor="#cbb3b3" VerticalOptions="FillAndExpand" Margin="0,0,15,0" >
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="15"/>
+                            </Border.StrokeShape>
+                            <Image Grid.Column="0"  Source="{Binding Book.CoverImagePath}" Aspect="AspectFit"></Image>
+                        </Border>
+                        <VerticalStackLayout Spacing="15" Grid.Column="1">
+                            <Label Text="{Binding Book.Title}"/>
+                            <Label Text="{Binding Book.Author.Username}"/>
+                            <Label Text="{Binding Book.Genre.Name}"/>
+                            <Label Text="{Binding Book.PublicationDate}"/>
+                            <Picker></Picker>
+                        </VerticalStackLayout>
+                    </Grid>
+                    <Button Text="123"></Button>
+                    <ListView ItemsSource="{Binding Comments}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <ViewCell.View>
+                                        <VerticalStackLayout>
+                                            <Label Text="{Binding Path = Text}"/>
+
+                                            <Label Text="{Binding Path = Author.Username}"/>
+                                        </VerticalStackLayout>
+                                    </ViewCell.View>
+                                </ViewCell>
+                                
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </VerticalStackLayout>
+            </Grid>
+        </ScrollView>
+    </RefreshView>
 </ContentPage>

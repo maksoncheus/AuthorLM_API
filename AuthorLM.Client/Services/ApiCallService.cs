@@ -25,6 +25,14 @@ namespace AuthorLM.Client.Services
                 books.ForEach(ChangePathInBook);
             return books;
         }
+        public async Task<IEnumerable<Comment>> GetCommentsByBookId(int id)
+        {
+            string url = ApiAddress + $"Comment/GetCommentsByBookId?bookId={id}";
+            using HttpResponseMessage response = await _client.GetAsync(url);
+
+            List<Comment> comments = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<Comment>>(await response.Content.ReadAsStringAsync()).ToList();
+            return comments;
+        }
         private void ChangePathInBook(Book book)
         {
             if (book == null) throw new ArgumentException(nameof(book));

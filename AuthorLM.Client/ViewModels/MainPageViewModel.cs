@@ -52,6 +52,24 @@ namespace AuthorLM.Client.ViewModels
                 OnPropertyChanged();
             }
         }
+        private bool _isFlyoutVisible;
+        public bool IsFlyoutVisible
+        {
+            get => _isFlyoutVisible;
+            set
+            {
+                _isFlyoutVisible = value;
+                OnPropertyChanged();
+            }
+        }
+        public Command OpenFlyout
+        {
+            get => new(() => IsFlyoutVisible = true);
+        }
+        public Command CloseFlyout
+        {
+            get => new(() => IsFlyoutVisible = false);
+        }
         public Command NavigateToBook
         {
             get => new(async (o) =>
@@ -73,6 +91,7 @@ namespace AuthorLM.Client.ViewModels
         }
         public override Task OnNavigatedTo()
         {
+            CloseFlyout.Execute(null);
             RefreshPage.Execute(null);
             return base.OnNavigatedTo();
         }

@@ -5,11 +5,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:AuthorLM.Client"
     xmlns:views="clr-namespace:AuthorLM.Client.Views"
-    Shell.FlyoutBehavior="Disabled"
+    Shell.FlyoutBehavior="Flyout"
     Title="AuthorLM.Client">
-
-    <ShellContent
-        ContentTemplate="{DataTemplate views:MainPage}"
-        Route="MainPage" />
+    <FlyoutItem>
+        <ShellContent
+    ContentTemplate="{DataTemplate views:MainPage}"
+    Title="123"
+    Route="MainPage" />
+    </FlyoutItem>
+    
 
 </Shell>
