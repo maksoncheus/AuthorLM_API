@@ -25,7 +25,7 @@ namespace AuthorLM_API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AuthorLM_API.Data.Entities.Book", b =>
+            modelBuilder.Entity("DbLibrary.Data.Entities.Book", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -54,6 +54,9 @@ namespace AuthorLM_API.Migrations
                     b.Property<DateOnly>("PublicationDate")
                         .HasColumnType("date");
 
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -70,7 +73,7 @@ namespace AuthorLM_API.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("AuthorLM_API.Data.Entities.Comment", b =>
+            modelBuilder.Entity("DbLibrary.Data.Entities.Comment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -100,7 +103,7 @@ namespace AuthorLM_API.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("AuthorLM_API.Data.Entities.Genre", b =>
+            modelBuilder.Entity("DbLibrary.Data.Entities.Genre", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -117,7 +120,7 @@ namespace AuthorLM_API.Migrations
                     b.ToTable("Genres");
                 });
 
-            modelBuilder.Entity("AuthorLM_API.Data.Entities.Role", b =>
+            modelBuilder.Entity("DbLibrary.Data.Entities.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -134,7 +137,7 @@ namespace AuthorLM_API.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("AuthorLM_API.Data.Entities.User", b =>
+            modelBuilder.Entity("DbLibrary.Data.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -171,15 +174,15 @@ namespace AuthorLM_API.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("AuthorLM_API.Data.Entities.Book", b =>
+            modelBuilder.Entity("DbLibrary.Data.Entities.Book", b =>
                 {
-                    b.HasOne("AuthorLM_API.Data.Entities.User", "Author")
+                    b.HasOne("DbLibrary.Data.Entities.User", "Author")
                         .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AuthorLM_API.Data.Entities.Genre", "Genre")
+                    b.HasOne("DbLibrary.Data.Entities.Genre", "Genre")
                         .WithMany()
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -190,15 +193,15 @@ namespace AuthorLM_API.Migrations
                     b.Navigation("Genre");
                 });
 
-            modelBuilder.Entity("AuthorLM_API.Data.Entities.Comment", b =>
+            modelBuilder.Entity("DbLibrary.Data.Entities.Comment", b =>
                 {
-                    b.HasOne("AuthorLM_API.Data.Entities.User", "Author")
+                    b.HasOne("DbLibrary.Data.Entities.User", "Author")
                         .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AuthorLM_API.Data.Entities.Book", "Book")
+                    b.HasOne("DbLibrary.Data.Entities.Book", "Book")
                         .WithMany()
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -209,9 +212,9 @@ namespace AuthorLM_API.Migrations
                     b.Navigation("Book");
                 });
 
-            modelBuilder.Entity("AuthorLM_API.Data.Entities.User", b =>
+            modelBuilder.Entity("DbLibrary.Data.Entities.User", b =>
                 {
-                    b.HasOne("AuthorLM_API.Data.Entities.Role", "Role")
+                    b.HasOne("DbLibrary.Data.Entities.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)

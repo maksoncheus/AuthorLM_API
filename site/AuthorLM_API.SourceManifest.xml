@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sitemanifest>
+  <IisApp path="C:\Users\maksoncheus\source\repos\AuthorLM_API\AuthorLM_API\obj\Debug\net8.0\PubTmp\Out\" />
+  <dbfullsql path="C:\Users\maksoncheus\source\repos\AuthorLM_API\AuthorLM_API\obj\Debug\net8.0\PubTmp\EFSQLScripts\AuthorLM_API.Data.ApplicationContext.sql" />
+</sitemanifest>

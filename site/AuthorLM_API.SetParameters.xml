@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="IIS Web Application Name" value="lmapi" />
+  <setParameter name="AuthorLM_API.Data.ApplicationContext" value="Server=.\SQLEXPRESS;Database=AuthorLM;Trusted_Connection=True;Integrated Security = true;TrustServerCertificate = true; MultipleActiveResultSets=True" />
+</parameters>

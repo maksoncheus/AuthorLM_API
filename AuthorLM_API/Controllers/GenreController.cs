@@ -33,7 +33,7 @@ namespace AuthorLM_API.Controllers
         {
             try
             {
-                await _context.Genres.AddAsync(new Data.Entities.Genre() { Name = name });
+                await _context.Genres.AddAsync(new DbLibrary.Data.Entities.Genre() { Name = name });
                 await _context.SaveChangesAsync();
                 return Ok();
             }

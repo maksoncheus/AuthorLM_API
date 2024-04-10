@@ -3,7 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthorLM_API", "AuthorLM_API\AuthorLM_API.csproj", "{F6678FA3-9F3B-4574-A024-3937DB8FE576}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthorLM_API", "AuthorLM_API\AuthorLM_API.csproj", "{F6678FA3-9F3B-4574-A024-3937DB8FE576}"
+	ProjectSection(ProjectDependencies) = postProject
+		{27324C1B-119F-4F03-89ED-D83960E458CF} = {27324C1B-119F-4F03-89ED-D83960E458CF}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthorLM.Client", "AuthorLM.Client\AuthorLM.Client.csproj", "{60F4FA07-E795-435D-983F-7416926DA04A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{27324C1B-119F-4F03-89ED-D83960E458CF} = {27324C1B-119F-4F03-89ED-D83960E458CF}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLibrary", "DbLibrary\DbLibrary.csproj", "{27324C1B-119F-4F03-89ED-D83960E458CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +25,15 @@ Global
 		{F6678FA3-9F3B-4574-A024-3937DB8FE576}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6678FA3-9F3B-4574-A024-3937DB8FE576}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6678FA3-9F3B-4574-A024-3937DB8FE576}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60F4FA07-E795-435D-983F-7416926DA04A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60F4FA07-E795-435D-983F-7416926DA04A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60F4FA07-E795-435D-983F-7416926DA04A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{60F4FA07-E795-435D-983F-7416926DA04A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60F4FA07-E795-435D-983F-7416926DA04A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27324C1B-119F-4F03-89ED-D83960E458CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27324C1B-119F-4F03-89ED-D83960E458CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27324C1B-119F-4F03-89ED-D83960E458CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27324C1B-119F-4F03-89ED-D83960E458CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

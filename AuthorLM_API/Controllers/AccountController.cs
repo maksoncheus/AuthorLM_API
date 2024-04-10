@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using AuthorLM_API.Data.Entities;
+using DbLibrary.Data.Entities;
 using AuthorLM_API.ViewModels;
 
 namespace AuthorLM_API.Controllers
@@ -62,7 +62,7 @@ namespace AuthorLM_API.Controllers
         /// <param name="password">Password</param>
         /// <returns>JWT Token for calls to API</returns>
         [HttpGet]
-        public IActionResult Authentificate(string authString, string password)
+        public IActionResult Authenticate(string authString, string password)
         {
             var identity = GetIdentity(authString, password);
             if (identity == null)

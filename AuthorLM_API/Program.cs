@@ -48,34 +48,32 @@ namespace AuthorLM_API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
 
-            builder.Services.AddSwaggerGen(c =>
+
+            builder.Services.AddSwaggerGen(setup =>
             {
-                c.EnableAnnotations();
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Title = "AuthorLM_API",
-                    Version = "v1"
-                });
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                OpenApiSecurityScheme jwtSecurityScheme = new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
-                    Description = "Please insert JWT with Bearer into field",
+                    Description = "Вставьте **_ТОЛЬКО_** ваш JWT!",
                     Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+
+                setup.AddSecurityDefinition("Bearer", jwtSecurityScheme);
+
+                setup.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    { jwtSecurityScheme, Array.Empty<string>() }
                 });
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
-   {
-     new OpenApiSecurityScheme
-     {
-       Reference = new OpenApiReference
-       {
-         Type = ReferenceType.SecurityScheme,
-         Id = "Bearer"
-       }
-      },
-      new string[] { }
-    }
-  });
+
             });
 
             var app = builder.Build();
@@ -107,7 +105,7 @@ namespace AuthorLM_API
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseStaticFiles();
 
             app.MapControllers();
 

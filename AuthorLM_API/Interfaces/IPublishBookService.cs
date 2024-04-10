@@ -1,4 +1,4 @@
-﻿using AuthorLM_API.Data.Entities;
+﻿using DbLibrary.Data.Entities;
 using AuthorLM_API.ViewModels;
 
 namespace AuthorLM_API.Interfaces

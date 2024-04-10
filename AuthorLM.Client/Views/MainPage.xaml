@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AuthorLM.Client.Views.MainPage"
+             xmlns:vm ="clr-namespace:AuthorLM.Client.ViewModels"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="mainPageText" TargetType="{x:Type Label}">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="24"/>
+                <Setter Property="Padding" Value="7,0"/>
+                <Setter Property="SemanticProperties.HeadingLevel" Value="Level1"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+                <Setter Property="Shadow">
+                    <Setter.Value>
+                        <Shadow Brush="Black" Offset="0,10" Opacity="0.4"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="bookBorderMain" TargetType="{x:Type Border}">
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="5"/>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Stroke" Value="Transparent"/>
+                <Setter Property="Padding" Value="7"/>
+                <Setter Property="Shadow">
+                    <Setter.Value>
+                        <Shadow Brush="Black" Radius="10" Offset="0,10" Opacity="0.4"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="bookBorderSecond" TargetType="{x:Type Border}">
+                <Setter Property="BackgroundColor" Value="#cbb3b3"/>
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="5"/>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Padding" Value="10"/>
+            </Style>
+
+            <DataTemplate x:Key="bookColItemTemp">
+                <Border Style="{StaticResource bookBorderMain}">
+                    <Border Style="{StaticResource bookBorderSecond}">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Path=BindingContext.NavigateToBook, Source={RelativeSource AncestorType={x:Type ContentPage}}}" CommandParameter="{Binding .}"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout WidthRequest="100">
+                            <Image Source="{Binding CoverImagePath}" HeightRequest="100" Aspect="AspectFit"/>
+                            <Label HeightRequest="25" Text="{Binding Title}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </Border>
+            </DataTemplate>
+
+            <Style x:Key="bookCollectionView" TargetType="CollectionView">
+                <!--<Setter Property="SelectionMode" Value="Single"/>
+                <Setter Property="SelectionChangedCommand" Value="{Binding NavigateToBook}"/>-->
+                <Setter Property="ItemsLayout" Value="HorizontalList"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <RefreshView
+        Command="{Binding RefreshPage}"
+        IsRefreshing="{Binding IsRefreshing}"
+        >
+        <ScrollView BackgroundColor="#bfa0a0">
+        <VerticalStackLayout
+            Padding="10,10"
+            Spacing="25">
+            <FlexLayout HeightRequest="50">
+                <Button FlexLayout.Grow="1" Text="Menu" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="Start"></Button>
+                <Button WidthRequest="40" Text="Search" Margin="0,0,5,0" HeightRequest="40"></Button>
+                <Button WidthRequest="40" Text ="Profile" HeightRequest="40"></Button>
+            </FlexLayout>
+            <VerticalStackLayout Spacing="10">
+                <Label Style="{StaticResource Key=mainPageText}"
+                       Text="Популярное"/>
+                <ScrollView Orientation="Horizontal" HeightRequest="200">
+                    <CollectionView
+                        Style="{DynamicResource bookCollectionView}"
+                        SelectedItem="{Binding SelectedBook}"
+                        ItemsSource="{Binding PopularBooks}"
+                        ItemTemplate="{DynamicResource bookColItemTemp}"/>
+                    <!--SelectionChangedCommandParameter="{Binding SelectedBook}"-->
+                </ScrollView>
+            </VerticalStackLayout>
+            <VerticalStackLayout Spacing="10">
+                <Label Style="{StaticResource Key=mainPageText}"
+                       Text="Новинки"/>
+                <ScrollView Orientation="Horizontal" HeightRequest="200">
+                    <CollectionView
+                        Style="{DynamicResource bookCollectionView}"
+                        SelectedItem="{Binding SelectedBook}"
+                        ItemsSource="{Binding NewBooks}"
+                        ItemTemplate="{DynamicResource bookColItemTemp}">
+                    </CollectionView>
+                </ScrollView>
+            </VerticalStackLayout>
+            <VerticalStackLayout Spacing="10">
+                <Label Style="{StaticResource Key=mainPageText}"
+                       Text="Читателям нравится"/>
+                <ScrollView Orientation="Horizontal" HeightRequest="200">
+                    <CollectionView
+                        Style="{DynamicResource bookCollectionView}"
+                        SelectedItem="{Binding SelectedBook}"
+                        ItemsSource="{Binding MostLikedBooks}"
+                        ItemTemplate="{DynamicResource bookColItemTemp}"/>
+                </ScrollView>
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+    </RefreshView>
+</ContentPage>
