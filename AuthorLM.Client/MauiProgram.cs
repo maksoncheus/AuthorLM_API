@@ -2,6 +2,7 @@
 using AuthorLM.Client.ViewModels;
 using AuthorLM.Client.Views;
 using Microsoft.Extensions.Logging;
+using CommunityToolkit.Maui;
 
 namespace AuthorLM.Client
 {
@@ -12,6 +13,7 @@ namespace AuthorLM.Client
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

@@ -7,7 +7,7 @@
              NavigationPage.HasNavigationBar="False">
     <ContentPage.Resources>
         <ResourceDictionary>
-            <Style x:Key="mainPageText" TargetType="{x:Type Label}">
+            <Style x:Key="mainPageText" TargetType="Label">
                 <Setter Property="TextColor" Value="White"/>
                 <Setter Property="FontSize" Value="24"/>
                 <Setter Property="Padding" Value="7,0"/>
@@ -20,7 +20,7 @@
                 </Setter>
             </Style>
 
-            <Style x:Key="bookBorderMain" TargetType="{x:Type Border}">
+            <Style x:Key="bookBorderMain" TargetType="Border">
                 <Setter Property="BackgroundColor" Value="Transparent"/>
                 <Setter Property="StrokeShape">
                     <Setter.Value>
@@ -36,7 +36,7 @@
                 </Setter>
             </Style>
 
-            <Style x:Key="bookBorderSecond" TargetType="{x:Type Border}">
+            <Style x:Key="bookBorderSecond" TargetType="Border">
                 <Setter Property="BackgroundColor" Value="#cbb3b3"/>
                 <Setter Property="StrokeShape">
                     <Setter.Value>
@@ -60,6 +60,27 @@
                 </Border>
             </DataTemplate>
 
+            <DataTemplate x:Key="bookLoadingItemTemp">
+                <Border Style="{StaticResource bookBorderMain}">
+                    <Border.Behaviors>
+                        <toolkit:AnimationBehavior>
+                            <toolkit:AnimationBehavior.AnimationType>
+                                <toolkit:FadeAnimation  Opacity="0.5"/>
+                            </toolkit:AnimationBehavior.AnimationType>
+                        </toolkit:AnimationBehavior>
+                    </Border.Behaviors>
+                    <Border Style="{StaticResource bookBorderSecond}">
+                        <VerticalStackLayout WidthRequest="100">
+                            <Border HeightRequest="125" Background="Transparent" StrokeThickness="0"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </Border>
+            </DataTemplate>
+            <Array x:Key="bookLoading" Type="{x:Type x:Int32}">
+                <x:Int32>1</x:Int32>
+                <x:Int32>2</x:Int32>
+                <x:Int32>3</x:Int32>
+            </Array>
             <Style x:Key="bookCollectionView" TargetType="CollectionView">
                 <!--<Setter Property="SelectionMode" Value="Single"/>
                 <Setter Property="SelectionChangedCommand" Value="{Binding NavigateToBook}"/>-->
@@ -67,72 +88,126 @@
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
-    <RefreshView
-        Command="{Binding RefreshPage}"
-        IsRefreshing="{Binding IsRefreshing}"
-        >
-        <ScrollView BackgroundColor="#bfa0a0" Orientation="Vertical">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="0.1*"/>
-                    <RowDefinition Height="0.25*"/>
-                    <RowDefinition Height="0.25*"/>
-                    <RowDefinition Height="0.25*"/>
-                    <RowDefinition Height="0.10*"/>
-                </Grid.RowDefinitions>
-                <FlexLayout Margin="0,0,0,15" Grid.Row="0" AlignItems="Center" BackgroundColor="#a27676">
-                    <ImageButton FlexLayout.Grow="1" Margin="7,0,0,0" Command="{Binding OpenFlyout}" Source="menu.svg" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="Start"></ImageButton>
-                    <ImageButton WidthRequest="40" Source="search.svg" Margin="0,0,10,0" HeightRequest="40"></ImageButton>
-                    <ImageButton WidthRequest="40" Source="profile.svg" Margin="0,0,10,0" HeightRequest="40"></ImageButton>
-                </FlexLayout>
-                <VerticalStackLayout Grid.Row="1" Spacing="10">
-                    <Label Style="{StaticResource Key=mainPageText}"
-                       Text="Популярное"/>
-                    <ScrollView Orientation="Horizontal" HeightRequest="200">
-                        <CollectionView
-                        Style="{DynamicResource bookCollectionView}"
-                        SelectedItem="{Binding SelectedBook}"
-                        ItemsSource="{Binding PopularBooks}"
-                        ItemTemplate="{DynamicResource bookColItemTemp}"/>
-                        <!--SelectionChangedCommandParameter="{Binding SelectedBook}"-->
-                    </ScrollView>
-                </VerticalStackLayout>
-                <VerticalStackLayout Grid.Row="2" Spacing="10">
-                    <Label Style="{StaticResource Key=mainPageText}"
-                       Text="Новинки"/>
-                    <ScrollView Orientation="Horizontal" HeightRequest="200">
-                        <CollectionView
-                        Style="{DynamicResource bookCollectionView}"
-                        SelectedItem="{Binding SelectedBook}"
-                        ItemsSource="{Binding NewBooks}"
-                        ItemTemplate="{DynamicResource bookColItemTemp}">
-                        </CollectionView>
-                    </ScrollView>
-                </VerticalStackLayout>
-                <VerticalStackLayout Grid.Row="3" Spacing="10">
-                    <Label Style="{StaticResource Key=mainPageText}"
-                       Text="Читателям нравится"/>
-                    <ScrollView Orientation="Horizontal" HeightRequest="200">
-                        <CollectionView
-                        Style="{DynamicResource bookCollectionView}"
-                        SelectedItem="{Binding SelectedBook}"
-                        ItemsSource="{Binding MostLikedBooks}"
-                        ItemTemplate="{DynamicResource bookColItemTemp}"/>
-                    </ScrollView>
-                </VerticalStackLayout>
-                <Border IsVisible="{Binding IsFlyoutVisible}" Grid.RowSpan="5" StrokeThickness="0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.65*"/>
-                            <ColumnDefinition Width="0.35*"/>
-                        </Grid.ColumnDefinitions>
-                        <Border StrokeThickness="0" Grid.Row="0" Background="AliceBlue">
+    <Grid>
+        <AbsoluteLayout VerticalOptions="Fill" HorizontalOptions="Fill" ZIndex="1">
+            <FlexLayout Margin="0,0,0,15" Grid.Row="0" AlignItems="Center" BackgroundColor="#a27676" AbsoluteLayout.LayoutFlags="WidthProportional" AbsoluteLayout.LayoutBounds="0,0,1,80">
+                <ImageButton FlexLayout.Grow="1" Margin="7,0,0,0" Command="{Binding OpenFlyout}" Source="menu.svg" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="Start"></ImageButton>
+                <ImageButton WidthRequest="40" Source="search.svg" Margin="0,0,10,0" HeightRequest="40"></ImageButton>
+                <ImageButton WidthRequest="40" Source="profile.svg" Margin="0,0,10,0" HeightRequest="40"></ImageButton>
+            </FlexLayout>
+            <Border IsVisible="{Binding IsFlyoutVisible}" StrokeThickness="0" AbsoluteLayout.LayoutFlags="SizeProportional" AbsoluteLayout.LayoutBounds="0,0,1,1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.65*"/>
+                        <ColumnDefinition Width="0.35*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border StrokeThickness="0" Grid.Row="0" Background="AliceBlue">
 
-                        </Border>
-                        <Button Command="{Binding CloseFlyout}" Grid.Column="1" CornerRadius="0" Opacity="0.35" BackgroundColor="Black"></Button>
-                    </Grid>
-                </Border>
-            </Grid>
-        </ScrollView>
-    </RefreshView>
+                    </Border>
+                    <Button Command="{Binding CloseFlyout}" Grid.Column="1" CornerRadius="0" Opacity="0.35" BackgroundColor="Black"></Button>
+                </Grid>
+            </Border>
+        </AbsoluteLayout>
+        <RefreshView Margin="0,65,0,0"
+    Command="{Binding RefreshPage}"
+    IsRefreshing="{Binding IsRefreshing}"
+    >
+            <ScrollView BackgroundColor="#bfa0a0" Orientation="Vertical">
+                <VerticalStackLayout>
+                
+                    <VerticalStackLayout Spacing="10">
+                        <Label Style="{StaticResource Key=mainPageText}"
+                   Text="Популярное"/>
+                        <ScrollView Orientation="Horizontal" HeightRequest="200">
+                            <CollectionView
+                    Style="{DynamicResource bookCollectionView}"
+                    SelectedItem="{Binding SelectedBook}"
+                    ItemsSource="{Binding PopularBooks}"
+                    ItemTemplate="{DynamicResource bookColItemTemp}"/>
+                        </ScrollView>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="10">
+                        <Label Style="{StaticResource Key=mainPageText}"
+                   Text="Новинки"/>
+                        <ScrollView Orientation="Horizontal" HeightRequest="200">
+                            <CollectionView
+                    Style="{DynamicResource bookCollectionView}"
+                    SelectedItem="{Binding SelectedBook}"
+                    ItemsSource="{Binding NewBooks}"
+                    ItemTemplate="{DynamicResource bookColItemTemp}">
+                            </CollectionView>
+                        </ScrollView>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="10">
+                        <Label Style="{StaticResource Key=mainPageText}"
+                   Text="Читателям нравится"/>
+                        <ScrollView Orientation="Horizontal" HeightRequest="200">
+                            <CollectionView
+                    Style="{DynamicResource bookCollectionView}"
+                    SelectedItem="{Binding SelectedBook}"
+                    ItemsSource="{Binding MostLikedBooks}"
+                    ItemTemplate="{DynamicResource bookColItemTemp}"/>
+                        </ScrollView>
+                    </VerticalStackLayout>
+                
+                </VerticalStackLayout>
+            </ScrollView>
+        </RefreshView>
+
+
+        <Grid BackgroundColor="#bfa0a0">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="IsVisible" Value="False"/>
+                    <Style.Triggers>
+                        <DataTrigger TargetType="Grid" Binding="{Binding PopularBooks.Count}" Value="0">
+                            <Setter Property="IsVisible" Value="True"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.1*"/>
+                <RowDefinition Height="0.25*"/>
+                <RowDefinition Height="0.25*"/>
+                <RowDefinition Height="0.25*"/>
+                <RowDefinition Height="0.10*"/>
+            </Grid.RowDefinitions>
+            <FlexLayout Margin="0,0,0,15" Grid.Row="0" AlignItems="Center" BackgroundColor="#a27676">
+                <ImageButton FlexLayout.Grow="1" Margin="7,0,0,0" Source="menu.svg" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="Start"></ImageButton>
+                <ImageButton WidthRequest="40" Source="search.svg" Margin="0,0,10,0" HeightRequest="40"></ImageButton>
+                <ImageButton WidthRequest="40" Source="profile.svg" Margin="0,0,10,0" HeightRequest="40"></ImageButton>
+            </FlexLayout>
+            <VerticalStackLayout Grid.Row="1" Spacing="10">
+                <Label
+                    Style="{StaticResource Key=mainPageText}"
+                    Text="Популярное"/>
+                <CollectionView
+                    Style="{DynamicResource bookCollectionView}"
+                    ItemsSource="{StaticResource bookLoading}"
+                    ItemTemplate="{StaticResource bookLoadingItemTemp}"/>
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Row="2" Spacing="10">
+                <Label
+                    Style="{StaticResource Key=mainPageText}"
+                    Text="Новинки"/>
+                <CollectionView
+                    Style="{DynamicResource bookCollectionView}"
+                    ItemsSource="{StaticResource bookLoading}"
+                    ItemTemplate="{StaticResource bookLoadingItemTemp}"/>
+
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Row="3" Spacing="10">
+                <Label
+                    Style="{StaticResource Key=mainPageText}"
+                    Text="Читателям нравится"/>
+                <CollectionView
+                    Style="{DynamicResource bookCollectionView}"
+                    ItemsSource="{StaticResource bookLoading}"
+                    ItemTemplate="{StaticResource bookLoadingItemTemp}"/>
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+
 </ContentPage>

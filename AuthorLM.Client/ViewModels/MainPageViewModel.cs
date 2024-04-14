@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace AuthorLM.Client.ViewModels
 {
@@ -110,6 +111,9 @@ namespace AuthorLM.Client.ViewModels
         private readonly NavigationService _navigationService;
         public MainPageViewModel(ApiCallService apiService, NavigationService navigationService)
         {
+            PopularBooks = new ();
+            NewBooks = new ();
+            MostLikedBooks = new ();
             _apiService = apiService;
             _navigationService = navigationService;
             GetBooks();

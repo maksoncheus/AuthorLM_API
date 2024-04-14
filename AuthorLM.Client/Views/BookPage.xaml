@@ -5,18 +5,13 @@
              Title="BookPage"
              NavigationPage.HasNavigationBar="False">
     <RefreshView
-    Command="{Binding RefreshPage}"
-    IsRefreshing="{Binding IsRefreshing}"
+        Command="{Binding Refresh}"
+        IsRefreshing="{Binding IsRefreshing}"
     >
         <ScrollView BackgroundColor="#bfa0a0" Orientation="Vertical">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="0.1*"/>
-                    <RowDefinition Height="0.9*"/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <FlexLayout Margin="0,0,0,15" Grid.Row="0" AlignItems="Center" BackgroundColor="#a27676">
-                    <ImageButton FlexLayout.Grow="1" Margin="7,0,0,0" Command="{Binding Back}" Source="back.svg" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="Start"></ImageButton>
+            <VerticalStackLayout>
+                <FlexLayout Margin="0,0,0,0" Grid.Row="0" AlignItems="Center" HeightRequest="50" BackgroundColor="#a27676">
+                    <ImageButton FlexLayout.Grow="1" Margin="3,0,0,0" Command="{Binding Back}" Source="back.svg" WidthRequest="60" HeightRequest="60" VerticalOptions="Center" HorizontalOptions="Start"></ImageButton>
                 </FlexLayout>
                 <VerticalStackLayout Grid.Row="1" Spacing="25" Padding="15">
                     <Grid HeightRequest="300" HorizontalOptions="Fill">
@@ -32,31 +27,44 @@
                         </Border>
                         <VerticalStackLayout Spacing="15" Grid.Column="1">
                             <Label Text="{Binding Book.Title}"/>
-                            <Label Text="{Binding Book.Author.Username}"/>
+                            <Label Text="{Binding Book.Author.Username}" TextColor="Purple">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer/>
+                                </Label.GestureRecognizers>
+                            </Label>
                             <Label Text="{Binding Book.Genre.Name}"/>
                             <Label Text="{Binding Book.PublicationDate}"/>
                             <Picker></Picker>
                         </VerticalStackLayout>
                     </Grid>
-                    <Button Text="123"></Button>
-                    <ListView ItemsSource="{Binding Comments}">
-                        <ListView.ItemTemplate>
+                    <Button Text="Читать" TextColor="White" BackgroundColor="#cc00ff" Opacity="0.75"></Button>
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Comments}">
+                        <BindableLayout.ItemTemplate>
                             <DataTemplate>
-                                <ViewCell>
-                                    <ViewCell.View>
-                                        <VerticalStackLayout>
-                                            <Label Text="{Binding Path = Text}"/>
-
-                                            <Label Text="{Binding Path = Author.Username}"/>
-                                        </VerticalStackLayout>
-                                    </ViewCell.View>
-                                </ViewCell>
-                                
+                                <Border Margin="0,5,0,5" Padding="5" Stroke="#ac8686">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="10"/>
+                                    </Border.StrokeShape>
+                                    <VerticalStackLayout>
+                                        <HorizontalStackLayout>
+                                            <Border BackgroundColor="Black" StrokeThickness="0" WidthRequest="40" HeightRequest="40" VerticalOptions="Start">
+                                                <Border.StrokeShape>
+                                                    <RoundRectangle CornerRadius="90"/>
+                                                </Border.StrokeShape>
+                                            </Border>
+                                            <VerticalStackLayout Margin="7,0,0,0">
+                                                <Label Text="{Binding Path = Author.Username}" FontAttributes="Bold"/>
+                                                <Label Text="{Binding Path = TimeStamp}" FontAttributes="Italic" FontSize="Small" Opacity="0.8"/>
+                                            </VerticalStackLayout>
+                                        </HorizontalStackLayout>
+                                        <Label Margin="0,4,0,0" Text="{Binding Path = Text}" LineBreakMode="WordWrap"/>
+                                    </VerticalStackLayout>
+                                </Border>
                             </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
                 </VerticalStackLayout>
-            </Grid>
+            </VerticalStackLayout>
         </ScrollView>
     </RefreshView>
 </ContentPage>
