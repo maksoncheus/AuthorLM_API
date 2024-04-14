@@ -1,6 +1,5 @@
-﻿using DbLibrary.Data.Entities;
+﻿using DbLibrary.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Xml;
 
 namespace AuthorLM_API.Data
 {
@@ -11,6 +10,7 @@ namespace AuthorLM_API.Data
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Like> Likes { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseLazyLoadingProxies();

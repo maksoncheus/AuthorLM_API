@@ -1,4 +1,4 @@
-﻿using DbLibrary.Data.Entities;
+﻿using DbLibrary.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +32,34 @@ namespace AuthorLM.Client.Services
 
             List<Comment> comments = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<Comment>>(await response.Content.ReadAsStringAsync()).ToList();
             return comments;
+        }
+        public async Task<IEnumerable<Like>> GetLikesByBookId(int id)
+        {
+            string url = ApiAddress + $"Likes/GetLikesByBookId?id={id}";
+            using HttpResponseMessage response = await _client.GetAsync(url);
+
+            List<Like> likes = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<Like>>(await response.Content.ReadAsStringAsync()).ToList();
+            return likes;
+        }
+        public async Task SetLike(int userId, int bookId)
+        {
+            string url = ApiAddress + $"Likes/SetLike?userId={userId}&bookId={bookId}";
+            using HttpResponseMessage response = await _client.PostAsync(url, null);
+            return;
+
+        }
+        public async Task UnsetLike(int userId, int bookId)
+        {
+            string url = ApiAddress + $"Likes/UnsetLike?userId={userId}&bookId={bookId}";
+            using HttpResponseMessage response = await _client.DeleteAsync(url);
+            return;
+        }
+        public async Task<User> GetUserById(int userId)
+        {
+            string url = ApiAddress + $"Users/GetUserDetails?id={userId}";
+            using HttpResponseMessage response = await _client.GetAsync(url);
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<User>(await response.Content.ReadAsStringAsync());
         }
         private void ChangePathInBook(Book book)
         {

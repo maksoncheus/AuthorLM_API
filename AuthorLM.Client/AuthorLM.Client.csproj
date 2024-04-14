@@ -58,6 +58,7 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\Images\back.svg" />
+	  <None Remove="Resources\Images\like.svg" />
 	  <None Remove="Resources\Images\menu.svg" />
 	  <None Remove="Resources\Images\profile.svg" />
 	  <None Remove="Resources\Images\search.svg" />

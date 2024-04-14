@@ -1,6 +1,6 @@
 using AuthorLM_API.Data;
 using AuthorLM_API.Data.Encryption;
-using DbLibrary.Data.Entities;
+using DbLibrary.Entities;
 using AuthorLM_API.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

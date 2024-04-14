@@ -1,5 +1,5 @@
 ﻿using AuthorLM_API.Data;
-using DbLibrary.Data.Entities;
+using DbLibrary.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

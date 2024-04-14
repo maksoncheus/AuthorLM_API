@@ -1,4 +1,4 @@
-﻿using DbLibrary.Data.Entities;
+﻿using DbLibrary.Entities;
 using Swashbuckle.AspNetCore.Annotations;
 namespace AuthorLM_API.ViewModels
 {

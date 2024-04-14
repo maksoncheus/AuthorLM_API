@@ -3,7 +3,7 @@ using AuthorLM_API.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AuthorLM_API.Interfaces;
-using DbLibrary.Data.Entities;
+using DbLibrary.Entities;
 using AuthorLM_API.Data.Encryption;
 using Microsoft.EntityFrameworkCore;
 using System.IO;

@@ -1,5 +1,5 @@
 ﻿using AuthorLM.Client.Services;
-using DbLibrary.Data.Entities;
+using DbLibrary.Entities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,18 +17,65 @@ namespace AuthorLM.Client.ViewModels
         private int bookId;
         public override async Task OnNavigatingTo(object? parameter)
         {
-            await Initialize((int)parameter);
+            Initialize((int)parameter);
             await base.OnNavigatingTo(parameter);
         }
-        private async Task Initialize(int param)
+        private bool _isLiked;
+        public bool IsLiked
+        {
+            get => _isLiked;
+            set
+            {
+                _isLiked = value;
+                OnPropertyChanged();
+            }
+        }
+        public Command SetLike
+        {
+            get => new(async() => {
+                int userId = Convert.ToInt32(Preferences.Get("userId", "2"));
+                await _apiCallService.SetLike(userId, bookId);
+                Refresh.Execute(null);
+                });
+        }
+        public Command UnsetLike
+        {
+            get => new(async() => {
+                int userId = Convert.ToInt32(Preferences.Get("userId", "2"));
+                await _apiCallService.UnsetLike(userId, bookId);
+                Refresh.Execute(null);
+                });
+        }
+        private async void GetIsLiked(int id)
+        {
+            int userId = Convert.ToInt32(Preferences.Get("userId", "2"));
+            List<Like> likes = (List<Like>)await _apiCallService.GetLikesByBookId(id);
+            if (likes.AsQueryable().FirstOrDefault(l => l.Liker.Id == userId && Book.Id == id) != null)
+                IsLiked = true;
+            else
+                IsLiked = false;
+            //if (Preferences.ContainsKey("userId"))
+            //{
+            //    int userId = Convert.ToInt32(Preferences.Get("userId", "1"));
+            //    List<Like> likes = (List<Like>) await _apiCallService.GetLikesByBookId(id);
+            //    if (likes.AsQueryable().FirstOrDefault(l => l.Liker.Id == userId && Book.Id == id) != null)
+            //        IsLiked = true;
+            //    else
+            //        IsLiked = false;
+            //}
+        }
+        private async void Initialize(int param)
         {
             await Task.Run(() =>
             {
                 bookId = param;
+                GetIsLiked(bookId);
                 FindBookById(bookId);
                 LoadComments(bookId);
             });
         }
+        private async Task _init(int param)
+            => await Task.Run(() => Initialize(param));
         private bool _isRefreshing;
         public bool IsRefreshing
         {
@@ -44,7 +91,7 @@ namespace AuthorLM.Client.ViewModels
             get => new(async () =>
             {
                 IsRefreshing = true;
-                await Initialize(bookId);
+                await _init(bookId);
                 IsRefreshing = false;
             }
             );
@@ -65,7 +112,7 @@ namespace AuthorLM.Client.ViewModels
         private Book _book;
         public Book Book
         {
-            get => _book;
+            get => _book ?? new Book();
             set
             {
                 _book = value;

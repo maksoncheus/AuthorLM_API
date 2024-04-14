@@ -4,15 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Data\Entities\**" />
-    <Content Remove="Data\Entities\**" />
-    <EmbeddedResource Remove="Data\Entities\**" />
-    <None Remove="Data\Entities\**" />
-  </ItemGroup>
-
+  </PropertyGroup>  
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.3" />
@@ -31,11 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\books\" />
+    <ProjectReference Include="..\DbLibrary\DbLibrary.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DbLibrary\DbLibrary.csproj" />
+    <Folder Include="wwwroot\books\" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,5 @@
 ﻿using AuthorLM.Client.Services;
-using DbLibrary.Data.Entities;
+using DbLibrary.Entities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -86,6 +86,9 @@ namespace AuthorLM.Client.ViewModels
             get => new(async () =>
             {
                 IsRefreshing = true;
+                PopularBooks = new();
+                NewBooks = new();
+                MostLikedBooks = new();
                 await Task.Run(GetBooks);
                 IsRefreshing = false;
             });
@@ -123,7 +126,7 @@ namespace AuthorLM.Client.ViewModels
             List<Book> books = (List<Book>)await _apiService.GetAllBooks();
             PopularBooks = new ObservableCollection<Book>(books.OrderBy(b => b.Rating).Take(10));
             NewBooks = new ObservableCollection<Book>(books.OrderByDescending(b => b.PublicationDate).Take(10));
-            MostLikedBooks = new ObservableCollection<Book>(books.OrderBy(b => b.Rating).Take(10));
+            MostLikedBooks = new ObservableCollection<Book>(books.OrderByDescending(b => b.Rating).Take(10));
         }
     }
 }

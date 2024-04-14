@@ -1,4 +1,4 @@
-﻿namespace DbLibrary.Data.Entities
+﻿namespace DbLibrary.Entities
 {
     public class Comment
     {

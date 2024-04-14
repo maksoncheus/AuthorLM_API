@@ -1,5 +1,5 @@
 ﻿using AuthorLM_API.Data;
-using DbLibrary.Data.Entities;
+using DbLibrary.Entities;
 using AuthorLM_API.Helpers;
 using AuthorLM_API.Interfaces;
 using AuthorLM_API.ViewModels;

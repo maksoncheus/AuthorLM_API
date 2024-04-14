@@ -26,6 +26,7 @@ namespace AuthorLM.Client
             builder.Services.AddTransient<BookPage>();
             builder.Services.AddTransient<BookPageViewModel>();
             builder.Services.AddSingleton<NavigationService>();
+            builder.Services.AddSingleton<AccountService>();
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif

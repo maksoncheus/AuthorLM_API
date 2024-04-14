@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DbLibrary.Data.Entities
+namespace DbLibrary.Entities
 {
     public class User
     {

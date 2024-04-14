@@ -1,5 +1,5 @@
 ﻿using AuthorLM_API.Data.Encryption;
-using DbLibrary.Data.Entities;
+using DbLibrary.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace AuthorLM_API.Data
@@ -54,7 +54,7 @@ namespace AuthorLM_API.Data
             List<string> directories = Directory.EnumerateDirectories(Path.Combine(_environment.WebRootPath, "books")).ToList();
             foreach (string directory in directories)
             {
-                if (await context.Books.FirstOrDefaultAsync(b => b.Title == directory) == null)
+                if (await context.Books.FirstOrDefaultAsync(b => b.Title == directory.Replace(Path.Combine(_environment.WebRootPath, "books") + "\\", "")) == null)
                 {
                     Directory.Delete(directory, true);
                 }

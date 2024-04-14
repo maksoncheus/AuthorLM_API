@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using DbLibrary.Data.Entities;
+using DbLibrary.Entities;
 using AuthorLM_API.ViewModels;
 
 namespace AuthorLM_API.Controllers
