@@ -21,6 +21,17 @@ namespace AuthorLM_API.Data
             await AddRolesAsync(context);
             await AddAdminUserAsync(context);
             await DeleteFoldersWithNoBooks(context, environment);
+            await SetPhotoPaths(context, environment);
+        }
+        private static async Task SetPhotoPaths(ApplicationContext context, IWebHostEnvironment environment)
+        {
+            foreach(User user in context.Users)
+            {
+                //if (string.IsNullOrEmpty(user.PathToPhoto))
+                    user.PathToPhoto = Path.Combine(environment.WebRootPath, "src", "images") + "\\reader.png";
+                context.Entry(user).State = EntityState.Modified;
+            }
+            await context.SaveChangesAsync();
         }
         private static async Task AddRolesAsync(ApplicationContext context)
         {

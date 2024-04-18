@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AuthorLM.Client.Views.ProfilePageLazyView">
+
+    <RefreshView Grid.Row="1"
+    VerticalOptions="Fill" HorizontalOptions="Fill"
+    Command="{Binding Refresh}"
+    IsRefreshing="{Binding IsRefreshing}">
+        <ScrollView Orientation="Vertical">
+            <VerticalStackLayout Grid.Row="1" Spacing="10" Padding="15">
+                <HorizontalStackLayout>
+                    <Border HeightRequest="160" WidthRequest="160" BackgroundColor="#cbb3b3" VerticalOptions="FillAndExpand" Margin="0,0,15,0" >
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="90"/>
+                        </Border.StrokeShape>
+                        <Image Grid.Column="0" Source="{Binding User.PathToPhoto}" Aspect="AspectFit"/>
+                    </Border>
+                    <VerticalStackLayout Spacing="15" Grid.Column="1">
+                        <Label Text="{Binding User.Username}" FontAttributes="Bold" FontSize="Large"/>
+                        <Label Text="{Binding User.EmailAddress}"/>
+                        <Label Text="{Binding User.Status}"/>
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+                <VerticalStackLayout Spacing="10" IsVisible="{Binding IsMyAccount}">
+                    <BoxView Color="Gray"  HeightRequest="2" HorizontalOptions="Fill" Margin="1"/>
+                    <FlexLayout HorizontalOptions="Center" AlignContent="Center">
+                        <Button Margin="0,0,15,0" WidthRequest="200" BackgroundColor="Gray" Text="Редактировать"/>
+                        <Button Margin="15,0,0,0" WidthRequest="200" BackgroundColor="LightGray" Text="Добавить книгу" TextColor="Black"/>
+                    </FlexLayout>
+                    <BoxView Color="Gray"  HeightRequest="2" HorizontalOptions="Fill" Margin="1"/>
+                </VerticalStackLayout>
+                <Label Text="Мои книги" FontSize="Title" IsVisible="{Binding IsMyAccount}"/>
+                <Label Text="{Binding User.Username, StringFormat='Книги {0}'}" FontSize="Title" Margin="0,25,0,0">
+                    <Label.Style>
+                        <Style TargetType="Label">
+                            <Setter Property="IsVisible" Value="Collapse"/>
+                            <Style.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsMyAccount}" Value="False">
+                                    <Setter Property="IsVisible" Value="True"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+                </Label>
+                <FlexLayout Wrap="Wrap" BindableLayout.ItemsSource="{Binding Books}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource bookBorderMain}" >
+                                <Border Style="{StaticResource bookBorderSecond}">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.NavigateToBook, Source={RelativeSource AncestorType={x:Type ContentPage}}}" CommandParameter="{Binding .}"/>
+                                    </Border.GestureRecognizers>
+                                    <VerticalStackLayout WidthRequest="100">
+                                        <Image Source="{Binding CoverImagePath}" WidthRequest="75" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="100" Aspect="AspectFit"/>
+                                        <Label MinimumHeightRequest="25" Text="{Binding Title}" LineBreakMode="WordWrap"/>
+                                    </VerticalStackLayout>
+                                </Border>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentView>

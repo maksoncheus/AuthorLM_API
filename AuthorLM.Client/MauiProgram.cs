@@ -20,13 +20,21 @@ namespace AuthorLM.Client
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
             builder.Services.AddSingleton<HttpClient>();
+            builder.Services.AddTransient<FileResolveService>();
+            builder.Services.AddTransient<HttpRequestHeaderService>();
             builder.Services.AddSingleton<ApiCallService>();
-            builder.Services.AddTransient<MainPage>();
-            builder.Services.AddTransient<MainPageViewModel>();
-            builder.Services.AddTransient<BookPage>();
-            builder.Services.AddTransient<BookPageViewModel>();
-            builder.Services.AddSingleton<NavigationService>();
             builder.Services.AddSingleton<AccountService>();
+            builder.Services.AddTransient<MainPageViewModel>();
+            builder.Services.AddTransient<MainPage>();
+            builder.Services.AddTransient<BookPageViewModel>();
+            builder.Services.AddTransient<BookPage>();
+            builder.Services.AddTransient<AuthorizationViewModel>();
+            builder.Services.AddTransient<AuthorizationPage>();
+            builder.Services.AddTransient<RegistrationPageViewModel>();
+            builder.Services.AddTransient<RegistrationPage>();
+            builder.Services.AddTransient<ProfilePageViewModel>();
+            builder.Services.AddTransient<ProfilePage>();
+            builder.Services.AddSingleton<NavigationService>();
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif

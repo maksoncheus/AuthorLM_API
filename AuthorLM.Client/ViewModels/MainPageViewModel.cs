@@ -1,5 +1,6 @@
 ﻿using AuthorLM.Client.Services;
 using DbLibrary.Entities;
+using Microsoft.Maui;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -53,23 +54,42 @@ namespace AuthorLM.Client.ViewModels
                 OnPropertyChanged();
             }
         }
-        private bool _isFlyoutVisible;
-        public bool IsFlyoutVisible
+        private bool _isProfileFlyoutVisible;
+        public bool IsProfileFlyoutVisible
         {
-            get => _isFlyoutVisible;
+            get => _isProfileFlyoutVisible;
             set
             {
-                _isFlyoutVisible = value;
+                _isProfileFlyoutVisible = value;
                 OnPropertyChanged();
             }
         }
-        public Command OpenFlyout
+        public Command OpenProfileFlyout
         {
-            get => new(() => IsFlyoutVisible = true);
+            get => new(() => IsProfileFlyoutVisible = true);
         }
-        public Command CloseFlyout
+        public Command CloseProfileFlyout
         {
-            get => new(() => IsFlyoutVisible = false);
+            get => new(() => IsProfileFlyoutVisible = false);
+        }
+
+        private bool _isNavigationFlyoutVisible;
+        public bool IsNavigationFlyoutVisible
+        {
+            get => _isNavigationFlyoutVisible;
+            set
+            {
+                _isNavigationFlyoutVisible = value;
+                OnPropertyChanged();
+            }
+        }
+        public Command OpenNavigationFlyout
+        {
+            get => new(() => IsNavigationFlyoutVisible = true);
+        }
+        public Command CloseNavigationFlyout
+        {
+            get => new(() => IsNavigationFlyoutVisible = false);
         }
         public Command NavigateToBook
         {
@@ -81,23 +101,61 @@ namespace AuthorLM.Client.ViewModels
                 SelectedBook = null;
             });
         }
+        public string AppName { get => App.APP_NAME; }
         public Command RefreshPage
         {
             get => new(async () =>
             {
                 IsRefreshing = true;
-                PopularBooks = new();
-                NewBooks = new();
-                MostLikedBooks = new();
-                await Task.Run(GetBooks);
+                await _init();
                 IsRefreshing = false;
             });
         }
-        public override Task OnNavigatedTo()
+        public override async Task OnNavigatedTo()
         {
-            CloseFlyout.Execute(null);
-            RefreshPage.Execute(null);
-            return base.OnNavigatedTo();
+            CloseNavigationFlyout.Execute(null);
+            CloseProfileFlyout.Execute(null);
+            if(_books == null) Books = new();
+            Task.Run(_init);
+        }
+        public Command NavigateToAuthorizationPage
+        {
+            get => new(async() => await _navigationService.NavigateToAuthorizationPage());
+        }
+        public Command LogOut
+        {
+            get => new(async () =>
+            {
+                _accountService.LogOut();
+                IsLoggedIn = _accountService.IsLoggedIn;
+                CloseProfileFlyout.Execute(null);
+                CurrentUser=null;
+            });
+        }
+        private async Task _init()
+        {
+            await Task.Run(async() =>
+            {
+                IsLoggedIn = _accountService.IsLoggedIn;
+                if (_accountService.IsLoggedIn)
+                {
+                    CurrentUser = await _apiService.GetDetails();
+                }
+            }).ContinueWith(async (t) => await Task.Run(GetBooks));
+        }
+        private User? _currentUser;
+        public User? CurrentUser
+        {
+            get => _currentUser ?? new User();
+            set
+            {
+                _currentUser = value;
+                OnPropertyChanged();
+            }
+        }
+        public Command ToProfile
+        {
+            get => new(async (id) => await _navigationService.NavigateToProfilePage((int)id));
         }
         private bool _isRefreshing = false;
         public bool IsRefreshing
@@ -109,24 +167,51 @@ namespace AuthorLM.Client.ViewModels
                 OnPropertyChanged();
             }
         }
-
+        private bool _isLoggedIn;
+        public bool IsLoggedIn
+        {
+            get => _isLoggedIn;
+            set
+            {
+                _isLoggedIn = value;
+                OnPropertyChanged();
+            }
+        }
         private readonly ApiCallService _apiService;
         private readonly NavigationService _navigationService;
-        public MainPageViewModel(ApiCallService apiService, NavigationService navigationService)
+        private readonly AccountService _accountService;
+        public MainPageViewModel(ApiCallService apiService, NavigationService navigationService, AccountService accountService)
         {
-            PopularBooks = new ();
-            NewBooks = new ();
-            MostLikedBooks = new ();
             _apiService = apiService;
             _navigationService = navigationService;
-            GetBooks();
+            _accountService = accountService;
+        }
+        private ObservableCollection<Book> _books;
+        public ObservableCollection<Book> Books
+        {
+            get => _books;
+            set
+            {
+                _books = value;
+                OnPropertyChanged();
+            }
         }
         private async void GetBooks()
         {
-            List<Book> books = (List<Book>)await _apiService.GetAllBooks();
-            PopularBooks = new ObservableCollection<Book>(books.OrderBy(b => b.Rating).Take(10));
-            NewBooks = new ObservableCollection<Book>(books.OrderByDescending(b => b.PublicationDate).Take(10));
-            MostLikedBooks = new ObservableCollection<Book>(books.OrderByDescending(b => b.Rating).Take(10));
+            if(Books == null)
+            {
+                PopularBooks = new();
+                NewBooks = new();
+                MostLikedBooks = new();
+            }
+            IEnumerable<Book> books = await _apiService.GetAllBooks();
+            if (books.Count() != Books.Count)
+            {
+                Books = new(books);
+                PopularBooks = new ObservableCollection<Book>(_books.OrderBy(b => b.Rating).Take(10));
+                NewBooks = new ObservableCollection<Book>(_books.OrderByDescending(b => b.PublicationDate).Take(10));
+                MostLikedBooks = new ObservableCollection<Book>(_books.OrderByDescending(b => b.Rating).Take(10));
+            }
         }
     }
 }

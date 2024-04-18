@@ -1,10 +1,12 @@
 ﻿using AuthorLM.Client.Services;
+using CommunityToolkit.Maui.Alerts;
 using DbLibrary.Entities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,15 +14,17 @@ namespace AuthorLM.Client.ViewModels
 {
     public class BookPageViewModel : ViewModel
     {
+        private readonly AccountService _accountService;
         private readonly NavigationService _navigationService;
         private readonly ApiCallService _apiCallService;
-        private int bookId;
+        public int bookId;
+        private bool _isLiked;
+
         public override async Task OnNavigatingTo(object? parameter)
         {
-            Initialize((int)parameter);
-            await base.OnNavigatingTo(parameter);
+            Task t = new Task(() => { Initialize((int)parameter); });
+            t.Start();
         }
-        private bool _isLiked;
         public bool IsLiked
         {
             get => _isLiked;
@@ -30,43 +34,92 @@ namespace AuthorLM.Client.ViewModels
                 OnPropertyChanged();
             }
         }
+        private string _commentText;
+        public string CommentText
+        {
+            get => _commentText;
+            set
+            {
+                _commentText = value;
+                OnPropertyChanged();
+            }
+        }
+        public Command PostComment
+        {
+            get => new Command( async()
+                =>
+            {
+
+                if (string.IsNullOrEmpty(_commentText))
+                {
+                    await Toast.Make("Напишите комментарий!").Show();
+                    return;
+                }
+                string commentText = _commentText;
+                
+                if (!_accountService.IsLoggedIn)
+                {
+                    await Toast.Make("Для выполнения данного действия вам необходимо авторизоваться").Show();
+                    return;
+                }
+                await _apiCallService.PostComment(bookId, _commentText);
+                CommentText = string.Empty;
+            Refresh.Execute(null);
+            });
+        }
         public Command SetLike
         {
-            get => new(async() => {
-                int userId = Convert.ToInt32(Preferences.Get("userId", "2"));
-                await _apiCallService.SetLike(userId, bookId);
-                Refresh.Execute(null);
-                });
+            get => new(SetLikeMethod);
+        }
+        private async void SetLikeMethod()
+        {
+            if (!_accountService.IsLoggedIn)
+            {
+                await Toast.Make("Для выполнения данного действия вам необходимо авторизоваться").Show();
+                return;
+            }
+            IsLiked = true;
+            Book.Rating += 1;
+            await _apiCallService.SetLike(bookId);
+            Refresh.Execute(null);
         }
         public Command UnsetLike
         {
-            get => new(async() => {
-                int userId = Convert.ToInt32(Preferences.Get("userId", "2"));
-                await _apiCallService.UnsetLike(userId, bookId);
-                Refresh.Execute(null);
-                });
+            get => new(UnsetLikeMethod);
+        }
+        private async void UnsetLikeMethod()
+        {
+            if (!_accountService.IsLoggedIn)
+            {
+                await Toast.Make("Для выполнения данного действия вам необходимо авторизоваться").Show();
+                return;
+            }
+            IsLiked = false;
+            Book.Rating -= 1;
+            await _apiCallService.UnsetLike(bookId);
+            Refresh.Execute(null);
         }
         private async void GetIsLiked(int id)
         {
-            int userId = Convert.ToInt32(Preferences.Get("userId", "2"));
-            List<Like> likes = (List<Like>)await _apiCallService.GetLikesByBookId(id);
-            if (likes.AsQueryable().FirstOrDefault(l => l.Liker.Id == userId && Book.Id == id) != null)
-                IsLiked = true;
-            else
-                IsLiked = false;
-            //if (Preferences.ContainsKey("userId"))
-            //{
-            //    int userId = Convert.ToInt32(Preferences.Get("userId", "1"));
-            //    List<Like> likes = (List<Like>) await _apiCallService.GetLikesByBookId(id);
-            //    if (likes.AsQueryable().FirstOrDefault(l => l.Liker.Id == userId && Book.Id == id) != null)
-            //        IsLiked = true;
-            //    else
-            //        IsLiked = false;
-            //}
+            if (_accountService.IsLoggedIn)
+            {
+                int userId = (await _apiCallService.GetDetails()).Id;
+                List<Like> likes = (List<Like>)await _apiCallService.GetLikesByBookId(id);
+                if (likes.AsQueryable().FirstOrDefault(l => l.Liker.Id == userId && Book.Id == id) != null)
+                {
+                    IsLiked = true;
+                    return;
+                }
+            }
+            IsLiked = false;
+        }
+        public Command ToProfile
+        {
+            get => new(async (id) =>  await _navigationService.NavigateToProfilePage((int)id));
         }
         private async void Initialize(int param)
         {
-            await Task.Run(() =>
+            Task.Run(() =>
             {
                 bookId = param;
                 GetIsLiked(bookId);
@@ -129,10 +182,11 @@ namespace AuthorLM.Client.ViewModels
                 OnPropertyChanged();
             }
         }
-        public BookPageViewModel(NavigationService navigationService, ApiCallService apiCallService)
+        public BookPageViewModel(NavigationService navigationService, ApiCallService apiCallService, AccountService accountService)
         {
             _navigationService = navigationService;
             _apiCallService = apiCallService;
+            _accountService = accountService;
         }
     }
 }

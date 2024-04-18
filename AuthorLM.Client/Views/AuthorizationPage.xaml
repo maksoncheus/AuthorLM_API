@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AuthorLM.Client.Views.AuthorizationPage"
+             NavigationPage.HasNavigationBar="False"
+             Title="Authorization">
+    <Grid RowDefinitions="0.07*,0.93*">
+        <FlexLayout Margin="0,0,0,0" Grid.Row="0" AlignItems="Center" BackgroundColor="#a27676">
+            <ImageButton FlexLayout.Grow="1" Margin="3,0,0,0" Command="{Binding Back}" Source="back.svg" WidthRequest="60" HeightRequest="60" VerticalOptions="Center" HorizontalOptions="Start"/>
+        </FlexLayout>
+        <VerticalStackLayout Padding="25" Spacing="5" BackgroundColor="#bfa0a0" Grid.Row="1">
+            <Image Source="logo.png" HeightRequest="200" WidthRequest="200"/>
+            <Label Text="{Binding AppName}" HorizontalOptions="Center" FontSize="Title" TextColor="MediumPurple"/>
+            <Label Margin="0,20,0,0" HorizontalOptions="Center" VerticalOptions="Center" Text="Авторизация" FontSize="Title"/>
+            <Label Margin="0,25,0,0" Text="Логин или адрес электронной почты" HorizontalOptions="Center" VerticalOptions="Center"/>
+            <Border Stroke="#a27676" BackgroundColor="Transparent" WidthRequest="300">
+                <Entry Text="{Binding AuthString}"/>
+            </Border>
+            <Label Margin="0,25,0,0" Text="Пароль" HorizontalOptions="Center" VerticalOptions="Center"/>
+            <Border Stroke="#a27676" BackgroundColor="Transparent" WidthRequest="300">
+                <Entry Text="{Binding Password}" IsPassword="True"/>
+            </Border>
+            <Button Margin="25" WidthRequest="200" TextColor="White" BackgroundColor="Purple" Opacity="0.8" Text="Войти" Command="{Binding LogIn}"/>
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Label Text="Ещё нет аккаунта? "/>
+                <Label Text="Регистрация" TextColor="Purple">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ToRegistration}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

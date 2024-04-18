@@ -18,9 +18,11 @@ namespace AuthorLM_API.Controllers
     public class AccountController : ControllerBase
     {
         private ApplicationContext _context;
-        public AccountController(ApplicationContext context)
+        private IWebHostEnvironment _webHostEnvironment;
+        public AccountController(ApplicationContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _webHostEnvironment = environment;
         }
         [HttpPost]
         public async Task<IActionResult> Registration(string username, string email, string password)
@@ -40,8 +42,9 @@ namespace AuthorLM_API.Controllers
                         Username = userVM.Username,
                         EmailAddress = userVM.EmailAddress,
                         Password = PasswordCipher.Encrypt(userVM.Password),
-                        Role = _context.Roles.First(r => r.Name == "User")
-                    };
+                        Role = _context.Roles.First(r => r.Name == "User"),
+                        PathToPhoto = Path.Combine(_webHostEnvironment.WebRootPath, "src", "images") + "\\reader.png"
+                };
                     await _context.Users.AddAsync(user);
                     await _context.SaveChangesAsync();
                     return Ok("Registration succesful!");
@@ -52,7 +55,12 @@ namespace AuthorLM_API.Controllers
                 }
             else
             {
-                return BadRequest(validationErrors);
+                List<string?> errors = new List<string?>();
+                foreach (var error in validationErrors)
+                {
+                    errors.Add(error.ErrorMessage);
+                }
+                return BadRequest(errors);
             }
         }
         /// <summary>
@@ -119,8 +127,7 @@ namespace AuthorLM_API.Controllers
                     User? user = _context.Users.FirstOrDefault(u => u.Username == username);
                     if (user != null)
                     {
-                        string decryptedPassword = PasswordCipher.Decrypt(user.Password);
-                        return Ok(new { user.Id, user.Username, user.EmailAddress, decryptedPassword });
+                        return Ok(new { user.Id, user.Username, user.EmailAddress, user.Status, user.PathToPhoto });
                     }
                 }
                 return BadRequest();
@@ -132,8 +139,9 @@ namespace AuthorLM_API.Controllers
         }
         [Authorize]
         [HttpPut]
-        public async Task<IActionResult> ChangePassword(string newPassword)
+        public async Task<IActionResult> ChangePassword(string oldPassword, string newPassword)
         {
+            
             string? username = HttpContext.User?.Identity?.Name;
             if (username != null && newPassword.Length >= 8 && newPassword.Length <= 20)
             {
@@ -141,21 +149,22 @@ namespace AuthorLM_API.Controllers
                 {
                     string encryptedPassword = PasswordCipher.Encrypt(newPassword);
                     User? user = _context.Users.FirstOrDefault(u => u.Username == username);
+                    if (PasswordCipher.Decrypt(user.Password) != oldPassword) return BadRequest("");
                     if (user != null)
                     {
                         user.Password = encryptedPassword;
                         _context.Entry(user).State = EntityState.Modified;
                         await _context.SaveChangesAsync();
-                        return Ok();
+                        return Ok("Вы успешно изменили пароль!");
                     }
-                    return BadRequest();
+                    return BadRequest("Что-то пошло не так...");
                 }
                 catch (Exception ex)
                 {
                     return BadRequest(ex.Message);
                 }
             }
-            return BadRequest();
+            return BadRequest("Длина пароля - от 8 до 20 символов");
         }
 
     }

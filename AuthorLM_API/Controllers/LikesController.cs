@@ -1,5 +1,6 @@
 ﻿using AuthorLM_API.Data;
 using DbLibrary.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,9 +16,10 @@ namespace AuthorLM_API.Controllers
             _context = context;
         }
         [HttpPost]
-        public async Task<IActionResult> SetLike(int userId, int bookId)
+        [Authorize]
+        public async Task<IActionResult> SetLike(int bookId)
         {
-            User? user = await _context.Users.FindAsync(userId);
+            User? user = await _context.Users.FirstOrDefaultAsync(u => u.Username == HttpContext.User.Identity.Name);
             Book? book = await _context.Books.FindAsync(bookId);
             if (user == null || book == null)
             {
@@ -31,9 +33,10 @@ namespace AuthorLM_API.Controllers
             return Ok();
         }
         [HttpDelete]
-        public async Task<IActionResult> UnsetLike(int userId, int bookId)
+        [Authorize]
+        public async Task<IActionResult> UnsetLike(int bookId)
         {
-            User? user = await _context.Users.FindAsync(userId);
+            User? user = await _context.Users.FirstOrDefaultAsync(u => u.Username == HttpContext.User.Identity.Name);
             Book? book = await _context.Books.FindAsync(bookId);
             if (user == null || book == null)
             {

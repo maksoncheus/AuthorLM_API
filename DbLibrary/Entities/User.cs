@@ -6,12 +6,14 @@ namespace DbLibrary.Entities
     {
         [Key]
         public int Id { get; set; }
-        [MinLength(6, ErrorMessage = "The minimum length of the username is 6")]
-        [MaxLength(30, ErrorMessage = "The maximum length of the username is 30")]
+        [MinLength(6, ErrorMessage = "Минимальная длина логина - 6 символов")]
+        [MaxLength(30, ErrorMessage = "Максимальная длина логина - 6 символов")]
         public string Username { get; set; } = null!;
-        [DataType(DataType.EmailAddress)]
+        [DataType(DataType.EmailAddress, ErrorMessage = "Введенный адрес не является корректным")]
         [EmailAddress]
         public string EmailAddress { get; set; } = null!;
+        public string Status { get; set;} = null!;
+        public string PathToPhoto { get; set; }
         [DataType(DataType.Password)]
         public string Password { get; set; } = null!;
         public virtual Role Role { get; set; } = null!;

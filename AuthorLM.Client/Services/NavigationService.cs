@@ -40,6 +40,16 @@ namespace AuthorLM.Client.Services
             => NavigateToPage<BookPage>(id);
         public Task NavigateToMainPage()
             => NavigateToPage<MainPage>();
+        public Task NavigateToAuthorizationPage()
+            => NavigateToPage<AuthorizationPage>();
+        public Task NavigateToRegistrationPage()
+            => NavigateToPage<RegistrationPage>();
+        public Task NavigateToProfilePage(int id)
+        {
+            return NavigateToPage<ProfilePage>(id);
+        }
+        public Task NavigateToRoot()
+            => Navigation.PopToRootAsync();
         private async Task NavigateToPage<T>(object? parameter = null) where T : Page
         {
             var toPage = ResolvePage<T>();
