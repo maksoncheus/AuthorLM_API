@@ -22,4 +22,13 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DbLibrary\DbLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\accounts\images\" />
+    <Folder Include="wwwroot\books\" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,98 @@
+﻿<?xml version = "1.0" encoding = "UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:AuthorLM.Client"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="AuthorLM.Client.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+                <ResourceDictionary>
+                    <Style x:Key="mainPageText" TargetType="Label">
+                        <Setter Property="TextColor" Value="White"/>
+                        <Setter Property="FontSize" Value="24"/>
+                        <Setter Property="Padding" Value="7,0"/>
+                        <Setter Property="SemanticProperties.HeadingLevel" Value="Level1"/>
+                        <Setter Property="HorizontalTextAlignment" Value="Start"/>
+                        <Setter Property="Shadow">
+                            <Setter.Value>
+                                <Shadow Brush="Black" Offset="0,10" Opacity="0.4"/>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+                    <Style x:Key="bookBorderMain" TargetType="Border">
+                        <Setter Property="BackgroundColor" Value="Transparent"/>
+                        <Setter Property="StrokeShape">
+                            <Setter.Value>
+                                <RoundRectangle CornerRadius="5"/>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Stroke" Value="Transparent"/>
+                        <Setter Property="Padding" Value="7"/>
+                        <Setter Property="Shadow">
+                            <Setter.Value>
+                                <Shadow Brush="Black" Radius="10" Offset="0,10" Opacity="0.4"/>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+                    <Style x:Key="bookBorderSecond" TargetType="Border">
+                        <Setter Property="BackgroundColor" Value="#cbb3b3"/>
+                        <Setter Property="StrokeShape">
+                            <Setter.Value>
+                                <RoundRectangle CornerRadius="5"/>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Padding" Value="10"/>
+                    </Style>
+
+                    <DataTemplate x:Key="bookColItemTemp">
+                        <Border Style="{StaticResource bookBorderMain}">
+                            <Border Style="{StaticResource bookBorderSecond}">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Path=BindingContext.NavigateToBook, Source={RelativeSource AncestorType={x:Type ContentPage}}}" CommandParameter="{Binding .}"/>
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout WidthRequest="100">
+                                    <Image WidthRequest="75" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="100" Aspect="AspectFit">
+                                        <Image.Source>
+                                            <UriImageSource Uri="{Binding CoverImagePath}" CachingEnabled="False"/>
+                                        </Image.Source>
+                                    </Image>
+                                    <Label MinimumHeightRequest="25" Text="{Binding Title}" LineBreakMode="WordWrap"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </Border>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="bookLoadingItemTemp">
+                        <Border Style="{StaticResource bookBorderMain}">
+                            <Border.Behaviors>
+                                <toolkit:AnimationBehavior>
+                                    <toolkit:AnimationBehavior.AnimationType>
+                                        <toolkit:FadeAnimation  Opacity="0.5"/>
+                                    </toolkit:AnimationBehavior.AnimationType>
+                                </toolkit:AnimationBehavior>
+                            </Border.Behaviors>
+                            <Border Style="{StaticResource bookBorderSecond}">
+                                <VerticalStackLayout WidthRequest="100">
+                                    <Border HeightRequest="125" Background="Transparent" StrokeThickness="0"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </Border>
+                    </DataTemplate>
+                    <Array x:Key="bookLoading" Type="{x:Type x:Int32}">
+                        <x:Int32>1</x:Int32>
+                        <x:Int32>2</x:Int32>
+                        <x:Int32>3</x:Int32>
+                    </Array>
+                    <Style x:Key="bookCollectionView" TargetType="CollectionView">
+                        <Setter Property="ItemsLayout" Value="HorizontalList"/>
+                    </Style>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

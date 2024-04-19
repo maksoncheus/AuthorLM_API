@@ -15,7 +15,30 @@ namespace AuthorLM_API.Data
                 "Admin",
                 "Guest"
             };
-            foreach (string role in roles)
+        private static readonly string _adminUsername = "SuperMegaAdmin";
+        private static readonly string _adminEmail = "lyubaAdmin@mail.ru";
+        private static readonly string _adminPassword = "adminSecurePassword";
+
+        public static async Task InitializeAsync(ApplicationContext context, IWebHostEnvironment environment)
+        {
+            await AddRolesAsync(context);
+            await AddAdminUserAsync(context);
+            await DeleteFoldersWithNoBooks(context, environment);
+            await SetPhotoPaths(context, environment);
+        }
+        private static async Task SetPhotoPaths(ApplicationContext context, IWebHostEnvironment environment)
+        {
+            foreach(User user in context.Users)
+            {
+                if (string.IsNullOrEmpty(user.PathToPhoto))
+                    user.PathToPhoto = Path.Combine(environment.WebRootPath, "src", "images") + "\\reader.png";
+                context.Entry(user).State = EntityState.Modified;
+            }
+            await context.SaveChangesAsync();
+        }
+        private static async Task AddRolesAsync(ApplicationContext context)
+        {
+            foreach (string role in _roles)
             {
                 if (!context.Roles.Any(r => r.Name == role))
                 {

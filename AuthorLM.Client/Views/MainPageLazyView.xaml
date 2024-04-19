@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AuthorLM.Client.Views.MainPageLazyView"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             >
+    <RefreshView
+Command="{Binding RefreshPage}"
+IsRefreshing="{Binding IsRefreshing}"
+>
+        <ScrollView BackgroundColor="#bfa0a0" Orientation="Vertical" ZIndex="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.1*"/>
+                    <RowDefinition Height="0.25*"/>
+                    <RowDefinition Height="0.25*"/>
+                    <RowDefinition Height="0.25*"/>
+                    <RowDefinition Height="0.10*"/>
+                </Grid.RowDefinitions>
+                <FlexLayout Margin="0,0,0,15" Grid.Row="0" AlignItems="Center" BackgroundColor="#a27676">
+                    <ImageButton FlexLayout.Grow="1" Margin="7,0,0,0" Command="{Binding OpenNavigationFlyout}" Source="menu.svg" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="Start"></ImageButton>
+                    <ImageButton WidthRequest="40" Source="search.svg" Margin="0,0,10,0" HeightRequest="40"></ImageButton>
+                    <ImageButton WidthRequest="40" Command="{Binding NavigateToAuthorizationPage}" Source="profile.svg" Margin="0,0,10,0" HeightRequest="40">
+                        <ImageButton.Style>
+                            <Style TargetType="ImageButton">
+                                <Setter Property="IsVisible" Value="True"/>
+                                <Style.Triggers>
+                                    <DataTrigger TargetType="ImageButton" Binding="{Binding IsLoggedIn}" Value="True">
+                                        <Setter Property="IsVisible" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ImageButton.Style>
+                    </ImageButton>
+                    <Border Margin="0,0,10,0" WidthRequest="40" HeightRequest="40">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="90"/>
+                        </Border.StrokeShape>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="IsVisible" Value="False"/>
+                                <Style.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsLoggedIn}" Value="True">
+                                        <Setter Property="IsVisible" Value="True"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <ImageButton WidthRequest="40" Command="{Binding OpenProfileFlyout}" HeightRequest="40">
+                            <ImageButton.Source>
+                                <UriImageSource Uri="{Binding CurrentUser.PathToPhoto}" CachingEnabled="False"/>
+                            </ImageButton.Source>
+                        </ImageButton>
+                    </Border>
+                    
+                </FlexLayout>
+                <VerticalStackLayout Grid.Row="1" Spacing="10">
+                    <Label Style="{StaticResource Key=mainPageText}"
+               Text="Популярное"/>
+                    <ScrollView Orientation="Horizontal" HeightRequest="200">
+                        <CollectionView
+                Style="{DynamicResource bookCollectionView}"
+                SelectedItem="{Binding SelectedBook}"
+                ItemsSource="{Binding PopularBooks}"
+                ItemTemplate="{DynamicResource bookColItemTemp}"/>
+                    </ScrollView>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Row="2" Spacing="10">
+                    <Label Style="{StaticResource Key=mainPageText}"
+               Text="Новинки"/>
+                    <ScrollView Orientation="Horizontal" HeightRequest="200">
+                        <CollectionView
+                Style="{DynamicResource bookCollectionView}"
+                SelectedItem="{Binding SelectedBook}"
+                ItemsSource="{Binding NewBooks}"
+                ItemTemplate="{DynamicResource bookColItemTemp}">
+                        </CollectionView>
+                    </ScrollView>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Row="3" Spacing="10">
+                    <Label Style="{StaticResource Key=mainPageText}"
+               Text="Читателям нравится"/>
+                    <ScrollView Orientation="Horizontal" HeightRequest="200">
+                        <CollectionView
+                Style="{DynamicResource bookCollectionView}"
+                SelectedItem="{Binding SelectedBook}"
+                ItemsSource="{Binding MostLikedBooks}"
+                ItemTemplate="{DynamicResource bookColItemTemp}"/>
+                    </ScrollView>
+                </VerticalStackLayout>
+                <Border IsVisible="{Binding IsNavigationFlyoutVisible}" Grid.RowSpan="5" StrokeThickness="0" ZIndex="2">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer/>
+                    </Border.GestureRecognizers>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.65*"/>
+                            <ColumnDefinition Width="0.35*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border StrokeThickness="0" Grid.Row="0" Background="#d6c2c2">
+                            <Grid RowDefinitions="0.1*, 0.9*">
+                                <HorizontalStackLayout BackgroundColor="#c2a3a3">
+                                    <Image Source="logo.png" WidthRequest="75" HeightRequest="75"/>
+                                    <Label TextColor="White" Text="{Binding AppName}" FontSize="Title" VerticalOptions="Center"/>
+                                </HorizontalStackLayout>
+                                <VerticalStackLayout Padding="10,0" Grid.Row="1" Spacing="15">
+                                    <HorizontalStackLayout>
+                                        <HorizontalStackLayout.GestureRecognizers>
+                                            <TapGestureRecognizer/>
+                                        </HorizontalStackLayout.GestureRecognizers>
+                                        <Image HeightRequest="60" Source="library.svg"/>
+                                        <Button HeightRequest="75" VerticalOptions="Center" BackgroundColor="Transparent" Text="Каталог" FontSize="Title"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout>
+                                        <HorizontalStackLayout.GestureRecognizers>
+                                            <TapGestureRecognizer/>
+                                        </HorizontalStackLayout.GestureRecognizers>
+                                        <Image HeightRequest="60" Source="rules.svg"/>
+                                        <Button HeightRequest="75" VerticalOptions="Center" BackgroundColor="Transparent" Text="Правила" FontSize="Title"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Grid>
+                            
+                        </Border>
+                        <Button Command="{Binding CloseNavigationFlyout}" Grid.Column="1" CornerRadius="0" Opacity="0.35" BackgroundColor="Black"></Button>
+                    </Grid>
+                </Border>
+                <Border IsVisible="{Binding IsProfileFlyoutVisible}" Grid.RowSpan="5" StrokeThickness="0">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer/>
+                    </Border.GestureRecognizers>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.35*"/>
+                            <ColumnDefinition Width="0.65*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border StrokeThickness="0" Grid.Row="0" Grid.Column="1" Background="#d6c2c2">
+                            <Grid RowDefinitions="0.1*, 0.9*">
+                                <HorizontalStackLayout BackgroundColor="#c2a3a3">
+                                    <Image Source="logo.png" WidthRequest="75" HeightRequest="75"/>
+                                    <Label TextColor="White" Text="{Binding CurrentUser.Username}" FontSize="Title" VerticalOptions="Center"/>
+                                </HorizontalStackLayout>
+                                <VerticalStackLayout Padding="10,0" Grid.Row="1" Spacing="15">
+                                    <FlexLayout>
+                                        <FlexLayout.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding ToProfile}" CommandParameter="{Binding CurrentUser.Id}"/>
+                                        </FlexLayout.GestureRecognizers>
+                                        <Label FlexLayout.Grow="1" HeightRequest="75" VerticalOptions="Center" VerticalTextAlignment="Center" BackgroundColor="Transparent" Text="Мой профиль" FontSize="Title"/>
+                                        <Image HeightRequest="75" WidthRequest="60" VerticalOptions="Center" HorizontalOptions="End" Source="profile.svg"/>
+                                    </FlexLayout>
+                                    <FlexLayout>
+                                        <FlexLayout.GestureRecognizers>
+                                            <TapGestureRecognizer/>
+                                        </FlexLayout.GestureRecognizers>
+                                        <Label FlexLayout.Grow="1" HeightRequest="75" VerticalOptions="Center" VerticalTextAlignment="Center" BackgroundColor="Transparent" Text="Моя библиотека" FontSize="Title"/>
+                                        <Image HeightRequest="60" HorizontalOptions="End" Source="mylibrary.svg"/>
+                                    </FlexLayout>
+                                    <FlexLayout>
+                                        <FlexLayout.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding LogOut}"/>
+                                        </FlexLayout.GestureRecognizers>
+                                        <Label FlexLayout.Grow="1" HeightRequest="75" VerticalOptions="Center" VerticalTextAlignment="Center" BackgroundColor="Transparent" Text="Выйти" FontSize="Title"/>
+                                        <Image HeightRequest="60" HorizontalOptions="End" Source="logout.svg"/>
+                                    </FlexLayout>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+                        <Button Command="{Binding CloseProfileFlyout}" Grid.Column="0" CornerRadius="0" Opacity="0.35" BackgroundColor="Black"></Button>
+                    </Grid>
+                </Border>
+            </Grid>
+        </ScrollView>
+    </RefreshView>
+</ContentView>
