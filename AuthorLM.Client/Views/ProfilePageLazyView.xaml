@@ -14,7 +14,11 @@
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="90"/>
                         </Border.StrokeShape>
-                        <Image Grid.Column="0" Source="{Binding User.PathToPhoto}" Aspect="AspectFit"/>
+                        <Image Grid.Column="0" Aspect="AspectFit">
+                            <Image.Source>
+                                <UriImageSource Uri="{Binding User.PathToPhoto}" CachingEnabled="False"/>
+                            </Image.Source>
+                        </Image>
                     </Border>
                     <VerticalStackLayout Spacing="15" Grid.Column="1">
                         <Label Text="{Binding User.Username}" FontAttributes="Bold" FontSize="Large"/>
@@ -25,8 +29,8 @@
                 <VerticalStackLayout Spacing="10" IsVisible="{Binding IsMyAccount}">
                     <BoxView Color="Gray"  HeightRequest="2" HorizontalOptions="Fill" Margin="1"/>
                     <FlexLayout HorizontalOptions="Center" AlignContent="Center">
-                        <Button Margin="0,0,15,0" WidthRequest="200" BackgroundColor="Gray" Text="Редактировать"/>
-                        <Button Margin="15,0,0,0" WidthRequest="200" BackgroundColor="LightGray" Text="Добавить книгу" TextColor="Black"/>
+                        <Button Margin="0,0,15,0" WidthRequest="200" BackgroundColor="Gray" Command="{Binding Edit}" Text="Редактировать"/>
+                        <Button Margin="15,0,0,0" WidthRequest="200" BackgroundColor="LightGray" Command="{Binding Publish}" Text="Добавить книгу" TextColor="Black"/>
                     </FlexLayout>
                     <BoxView Color="Gray"  HeightRequest="2" HorizontalOptions="Fill" Margin="1"/>
                 </VerticalStackLayout>

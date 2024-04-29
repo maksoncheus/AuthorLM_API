@@ -101,6 +101,10 @@ namespace AuthorLM.Client.ViewModels
                 SelectedBook = null;
             });
         }
+        public Command NavigateToLibrary
+        {
+            get => new(async () => await _navigationService.NavigateToMyLibrary());
+        }
         public string AppName { get => App.APP_NAME; }
         public Command RefreshPage
         {

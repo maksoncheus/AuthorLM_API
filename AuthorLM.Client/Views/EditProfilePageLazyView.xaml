@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AuthorLM.Client.Views.EditProfilePageLazyView">
+    <RefreshView Grid.Row="1"
+VerticalOptions="Fill" HorizontalOptions="Fill"
+Command="{Binding Refresh}"
+IsRefreshing="{Binding IsRefreshing}">
+        <ScrollView Orientation="Vertical" BackgroundColor="#bfa0a0">
+            <VerticalStackLayout Grid.Row="1" Spacing="10" Padding="15">
+                <Label Text="Моя страница" FontSize="Title"/>
+                <BoxView HorizontalOptions="Fill" HeightRequest="2"/>
+                <Label Text="Аватар или фотография" FontSize="Large"/>
+                <VerticalStackLayout Spacing="15" HorizontalOptions="Start">
+                        <Border HeightRequest="160" HorizontalOptions="Center" WidthRequest="160" BackgroundColor="#cbb3b3" VerticalOptions="FillAndExpand" >
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="90"/>
+                            </Border.StrokeShape>
+                            <Image Grid.Column="0"  Aspect="AspectFit">
+                                <Image.Source>
+                                    <UriImageSource Uri="{Binding User.PathToPhoto}" CachingEnabled="False"/>
+                                </Image.Source>
+                            </Image>
+                        </Border>
+                        <Button Text="Изменить" CornerRadius="5" BackgroundColor="SlateGray" Command="{Binding ChangePhoto}" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                <Label Text="Имя профиля (псевдоним)" FontSize="Large" Margin="0,15,0,0"/>
+                <Entry Text="{Binding User.Username}" FontSize="Large"/>
+                <Label Text="Контактный адрес эл. почты" FontSize="Large" Margin="0,15,0,0"/>
+                <Entry Text="{Binding User.EmailAddress}" FontSize="Large"/>
+                <Label Text="Кратко о себе" FontSize="Large" Margin="0,15,0,0"/>
+                <Entry Text="{Binding User.Status}" Placeholder="Расскажите, что у вас нового" MaxLength="50" FontSize="Large"/>
+                <Label HorizontalOptions="End" Margin="0" Text="{Binding User.Status.Length, StringFormat='{0}/50'}"/>
+                <FlexLayout>
+                    <Button Text="Сохранить" Command="{Binding ChangeDetails}" HorizontalOptions="Start" FlexLayout.Grow="1" BackgroundColor="Purple" BorderColor="MediumPurple"/>
+                    <Button Command="{Binding ChangePassword}" Text="Изменить пароль" BackgroundColor="Red"/>
+                </FlexLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentView>

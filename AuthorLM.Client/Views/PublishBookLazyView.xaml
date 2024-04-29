@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AuthorLM.Client.Views.PublishBookLazyView">
+    <RefreshView
+    VerticalOptions="Fill" HorizontalOptions="Fill"
+    Command="{Binding Refresh}"
+    IsRefreshing="{Binding IsRefreshing}">
+        <ScrollView BackgroundColor="#bfa0a0" Orientation="Vertical">
+            <VerticalStackLayout Grid.Row="1" Spacing="10" Padding="15">
+                <HorizontalStackLayout>
+                    <VerticalStackLayout Spacing="10">
+                        <Border HeightRequest="160" WidthRequest="120" BackgroundColor="#cbb3b3" VerticalOptions="FillAndExpand" Margin="0,0,15,0" >
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="5"/>
+                            </Border.StrokeShape>
+                            <Image Source="{Binding CoverImage}" Aspect="AspectFit"/>
+                        </Border>
+                        <Button Command="{Binding ChangePhoto}" Text="Изменить обложку" WidthRequest="120" Margin="0,0,15,0"/>
+                    </VerticalStackLayout>
+                    
+                    <VerticalStackLayout Spacing="15" HorizontalOptions="Fill" WidthRequest="320">
+                        <Entry Text="{Binding Title}" Placeholder="Название" FontAttributes="Bold" FontSize="Large"/>
+                        <Picker ItemsSource="{Binding Genres}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedGenre}"/>
+                        <Border Padding="5" HeightRequest="100">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="3"/>
+                            </Border.StrokeShape>
+                            <Editor Placeholder="Описание" Text="{Binding Description}" PlaceholderColor="Black" />
+                        </Border>
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+                <BoxView Color="Gray"  HeightRequest="2" HorizontalOptions="Fill" Margin="1"/>
+
+                <Button Text="Добавить контент книги (fb2, txt)" Command="{Binding ChangeContent}" TextColor="White" BackgroundColor="#cc00ff" Opacity="0.75"></Button>
+                
+                <Button Text="Опубликовать" Command="{Binding Publish}" FontSize="Small" HeightRequest="40" BackgroundColor="Purple"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentView>

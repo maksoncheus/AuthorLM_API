@@ -11,6 +11,9 @@ namespace AuthorLM_API.Data
         public DbSet<Book> Books { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Like> Likes { get; set; }
+        public DbSet<UserReadingBooks> UserReadingBooks { get; set; }
+        public DbSet<UserReadBooks> UserReadBooks { get; set; }
+        public DbSet<UserFavoriteBooks> UserFavoriteBooks { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseLazyLoadingProxies();
@@ -25,6 +28,9 @@ namespace AuthorLM_API.Data
             {
                 book.HasIndex(b => b.Title).IsUnique();
             });
+            builder.Entity<UserReadingBooks>().HasKey(u => new { u.UserId, u.BookId });
+            builder.Entity<UserReadBooks>().HasKey(u => new { u.UserId, u.BookId });
+            builder.Entity<UserFavoriteBooks>().HasKey(u => new { u.UserId, u.BookId });
         }
     }
 }

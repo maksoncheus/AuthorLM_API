@@ -45,9 +45,14 @@ namespace AuthorLM.Client.Services
         public Task NavigateToRegistrationPage()
             => NavigateToPage<RegistrationPage>();
         public Task NavigateToProfilePage(int id)
-        {
-            return NavigateToPage<ProfilePage>(id);
-        }
+            => NavigateToPage<ProfilePage>(id);
+        public Task NavigateToEditProfilePage()
+            => NavigateToPage<EditProfilePage>();
+        public Task NavigateToPublishPage()
+            => NavigateToPage<PublishBookPage>();
+        public Task NavigateToMyLibrary()
+            => NavigateToPage<MyLibraryPage>();
+        public Page GetCurrentPage() => Navigation.NavigationStack.Last();
         public Task NavigateToRoot()
             => Navigation.PopToRootAsync();
         private async Task NavigateToPage<T>(object? parameter = null) where T : Page

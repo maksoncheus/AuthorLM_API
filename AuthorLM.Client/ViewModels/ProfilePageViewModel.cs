@@ -27,12 +27,21 @@ namespace AuthorLM.Client.ViewModels
                 OnPropertyChanged();
             }
         }
+        public override Task OnNavigatedTo()
+        {
+            Refresh.Execute(null);
+            return base.OnNavigatedTo();
+        }
         public User User
         {
             get => _user;
             set
             {
+                string path = value.PathToPhoto;
+                value.PathToPhoto = "";
                 _user = value;
+                OnPropertyChanged();
+                _user.PathToPhoto = path;
                 OnPropertyChanged();
             }
         }
@@ -73,10 +82,19 @@ namespace AuthorLM.Client.ViewModels
                 await _navigationService.NavigateToBookPage(b.Id);
             });
         }
+        public Command Edit
+        {
+            get => new(async() => await _navigationService.NavigateToEditProfilePage());
+        }
+        
+        public Command Publish
+        {
+            get => new(async() => await _navigationService.NavigateToPublishPage());
+        }
 
         public Command Back
         {
-            get => new(async () => await _navigationService.NavigateToRoot());
+            get => new(async () => await _navigationService.NavigateBack());
         }
         public override Task OnNavigatingTo(object? parameter)
         {

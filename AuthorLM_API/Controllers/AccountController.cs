@@ -10,6 +10,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using DbLibrary.Entities;
 using AuthorLM_API.ViewModels;
+using AuthorLM_API.Helpers;
 
 namespace AuthorLM_API.Controllers
 {
@@ -166,6 +167,29 @@ namespace AuthorLM_API.Controllers
             }
             return BadRequest("Длина пароля - от 8 до 20 символов");
         }
+        [Authorize]
+        [HttpPut]
+        public async Task<IActionResult> ChangePhoto([FromForm] PhotoViewModel vm)
+        {
+            User user = _context.Users.First(u => u.Username == HttpContext.User.Identity.Name);
+            var FileName = user.Username;
 
+            var uploads = Path.Combine(_webHostEnvironment.WebRootPath, "accounts","images");
+
+            var filePath = Path.Combine(uploads, FileName + Path.GetExtension(vm.UserPhoto.FileName));
+            foreach (string f in Directory.EnumerateFiles(uploads))
+            {
+                if(Path.GetFileNameWithoutExtension(f) == FileName)
+                    System.IO.File.Delete(f);
+            }
+            using (FileStream stream = new(filePath, FileMode.Create))
+            {
+                await vm.UserPhoto.CopyToAsync(stream);
+            }
+            user.PathToPhoto = filePath;
+            _context.Entry(user).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return Ok("Успешно!");
+        }
     }
 }

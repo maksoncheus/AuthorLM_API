@@ -34,6 +34,16 @@ namespace AuthorLM.Client
             builder.Services.AddTransient<RegistrationPage>();
             builder.Services.AddTransient<ProfilePageViewModel>();
             builder.Services.AddTransient<ProfilePage>();
+            builder.Services.AddTransient<EditProfileViewModel>();
+            builder.Services.AddTransient<EditProfilePage>();
+            builder.Services.AddTransient<PublishBookViewModel>();
+            builder.Services.AddTransient<PublishBookPage>();
+            builder.Services.AddTransient<MyLibraryPage>();
+            builder.Services.AddTransient<MyLibraryViewModel>();
+            builder.Services.AddTransient<ChangePasswordPopup>();
+            builder.Services.AddTransient<ChangePasswordViewModel>();
+            builder.Services.AddTransientPopup<ChangePasswordPopup, ChangePasswordViewModel>();
+
             builder.Services.AddSingleton<NavigationService>();
 #if DEBUG
     		builder.Logging.AddDebug();

@@ -27,7 +27,7 @@ namespace AuthorLM_API.Data
         {
             foreach(User user in context.Users)
             {
-                //if (string.IsNullOrEmpty(user.PathToPhoto))
+                if (string.IsNullOrEmpty(user.PathToPhoto))
                     user.PathToPhoto = Path.Combine(environment.WebRootPath, "src", "images") + "\\reader.png";
                 context.Entry(user).State = EntityState.Modified;
             }

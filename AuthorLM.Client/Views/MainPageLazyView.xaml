@@ -33,20 +33,23 @@ IsRefreshing="{Binding IsRefreshing}"
                         </ImageButton.Style>
                     </ImageButton>
                     <Border Margin="0,0,10,0" WidthRequest="40" HeightRequest="40">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="IsVisible" Value="False"/>
+                                <Style.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsLoggedIn}" Value="True">
+                                        <Setter Property="IsVisible" Value="True"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="90"/>
                         </Border.StrokeShape>
-                        <ImageButton WidthRequest="40" Source="{Binding CurrentUser.PathToPhoto}" Command="{Binding OpenProfileFlyout}" HeightRequest="40">
-                            <ImageButton.Style>
-                                <Style TargetType="ImageButton">
-                                    <Setter Property="IsVisible" Value="False"/>
-                                    <Style.Triggers>
-                                        <DataTrigger TargetType="ImageButton" Binding="{Binding IsLoggedIn}" Value="True">
-                                            <Setter Property="IsVisible" Value="True"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ImageButton.Style>
+                        <ImageButton WidthRequest="40" Command="{Binding OpenProfileFlyout}" HeightRequest="40">
+                            <ImageButton.Source>
+                                <UriImageSource Uri="{Binding CurrentUser.PathToPhoto}" CachingEnabled="False"/>
+                            </ImageButton.Source>
                         </ImageButton>
                     </Border>
                     
@@ -147,7 +150,7 @@ IsRefreshing="{Binding IsRefreshing}"
                                     </FlexLayout>
                                     <FlexLayout>
                                         <FlexLayout.GestureRecognizers>
-                                            <TapGestureRecognizer/>
+                                            <TapGestureRecognizer Command="{Binding NavigateToLibrary}"/>
                                         </FlexLayout.GestureRecognizers>
                                         <Label FlexLayout.Grow="1" HeightRequest="75" VerticalOptions="Center" VerticalTextAlignment="Center" BackgroundColor="Transparent" Text="Моя библиотека" FontSize="Title"/>
                                         <Image HeightRequest="60" HorizontalOptions="End" Source="mylibrary.svg"/>
