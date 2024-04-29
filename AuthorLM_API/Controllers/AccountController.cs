@@ -150,7 +150,7 @@ namespace AuthorLM_API.Controllers
                 {
                     string encryptedPassword = PasswordCipher.Encrypt(newPassword);
                     User? user = _context.Users.FirstOrDefault(u => u.Username == username);
-                    if (PasswordCipher.Decrypt(user.Password) != oldPassword) return BadRequest("");
+                    if (PasswordCipher.Decrypt(user.Password) != oldPassword) return BadRequest("Вы ввели неправильный пароль");
                     if (user != null)
                     {
                         user.Password = encryptedPassword;
@@ -164,6 +164,18 @@ namespace AuthorLM_API.Controllers
                 {
                     return BadRequest(ex.Message);
                 }
+            }
+            return BadRequest("Длина пароля - от 8 до 20 символов");
+        }
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> ChangeDetails(string username, string email, string status)
+        {
+            User? user = _context.Users.FirstOrDefault(u => u.Username == HttpContext.User.Identity.Name);
+            if (user.Username != username)
+            {
+                if (await _context.Users.FirstOrDefaultAsync(u => u.Username == username) != null)
+                    return BadRequest("Пользователь с таким именем уже зарегистрирован");
             }
             return BadRequest("Длина пароля - от 8 до 20 символов");
         }

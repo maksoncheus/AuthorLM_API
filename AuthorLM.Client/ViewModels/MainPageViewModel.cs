@@ -153,7 +153,11 @@ namespace AuthorLM.Client.ViewModels
             get => _currentUser ?? new User();
             set
             {
+                string path = value.PathToPhoto;
+                value.PathToPhoto = "";
                 _currentUser = value;
+                OnPropertyChanged();
+                _currentUser.PathToPhoto = path;
                 OnPropertyChanged();
             }
         }

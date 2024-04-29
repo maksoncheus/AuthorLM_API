@@ -57,6 +57,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidResource Remove="Views\Новая папка\**" />
+	  <Compile Remove="Views\Новая папка\**" />
+	  <EmbeddedResource Remove="Views\Новая папка\**" />
+	  <MauiCss Remove="Views\Новая папка\**" />
+	  <MauiXaml Remove="Views\Новая папка\**" />
+	  <None Remove="Views\Новая папка\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiImage Remove="Resources\Images\appiconfg.svg" />
 	</ItemGroup>
 
@@ -111,6 +120,13 @@
 	  <MauiXaml Update="Views\BookPageLazyView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\ChangePasswordPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\EditProfilePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\EditProfilePageLazyView.xaml">
 	  <MauiXaml Update="Views\MainPageLazyView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -123,9 +139,27 @@
 	  <MauiXaml Update="Views\ProfilePageLazyView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\PublishBookLazyView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\PublishBookPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\RegistrationPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android'">
+	  <PackageReference Include="Com.Vanniktech.AndroidImageCropper.Maui">
+	    <Version>4.4.0.5</Version>
+	  </PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-ios'">
+	  <PackageReference Include="TOCropView.Maui">
+	    <Version>2.6.1.7</Version>
+	  </PackageReference>
 	</ItemGroup>
 
 	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionAuthorLMClientHideInfoBar="True" /></VisualStudio></ProjectExtensions>

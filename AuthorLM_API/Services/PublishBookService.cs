@@ -30,6 +30,8 @@ namespace AuthorLM_API.Services
                 CoverImagePath = publishBookRequest.CoverImagePath,
                 ContentPath = publishBookRequest.ContentPath
             };
+            await SaveBookContentAsync(publishBookRequest);
+            await SaveBookCoverImageAsync
             return book;
         }
 

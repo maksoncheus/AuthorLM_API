@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,6 +41,9 @@ namespace AuthorLM.Client.ViewModels
                 string path = value.PathToPhoto;
                 value.PathToPhoto = "";
                 _user = value;
+                OnPropertyChanged();
+                string path = _user.PathToPhoto;
+                _user.PathToPhoto = "";
                 OnPropertyChanged();
                 _user.PathToPhoto = path;
                 OnPropertyChanged();
@@ -100,6 +104,12 @@ namespace AuthorLM.Client.ViewModels
         {
             Task.Run(() => _init((int)parameter));
             return base.OnNavigatingTo(parameter);
+        }
+        public override Task OnNavigatedTo()
+        {
+            if(_user?.Id != null)
+                Refresh.Execute(null);
+            return base.OnNavigatedTo();
         }
         private async Task _init(int param)
         {

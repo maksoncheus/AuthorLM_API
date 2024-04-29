@@ -70,6 +70,10 @@ namespace AuthorLM.Client.Services
             else
                 throw new InvalidOperationException($"Unable to resolve type {typeof(T).FullName}");
         }
+        public Page GetCurrentPage()
+        {
+            return Navigation.NavigationStack.Last();
+        }
         private async void Page_NavigatedTo(object? sender, NavigatedToEventArgs e)
             => await CallNavigatedTo(sender as Page);
         private Task CallNavigatedTo(Page? p)

@@ -3,6 +3,7 @@ using AuthorLM.Client.ViewModels;
 using AuthorLM.Client.Views;
 using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Core;
 
 namespace AuthorLM.Client
 {

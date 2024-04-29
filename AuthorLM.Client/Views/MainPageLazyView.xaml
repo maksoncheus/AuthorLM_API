@@ -33,6 +33,9 @@ IsRefreshing="{Binding IsRefreshing}"
                         </ImageButton.Style>
                     </ImageButton>
                     <Border Margin="0,0,10,0" WidthRequest="40" HeightRequest="40">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="90"/>
+                        </Border.StrokeShape>
                         <Border.Style>
                             <Style TargetType="Border">
                                 <Setter Property="IsVisible" Value="False"/>

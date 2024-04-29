@@ -88,7 +88,11 @@
                                             <Border.StrokeShape>
                                                 <RoundRectangle CornerRadius="90"/>
                                             </Border.StrokeShape>
-                                            <Image Source="{Binding Path=Author.PathToPhoto}" WidthRequest="40" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="40"/>
+                                            <Image WidthRequest="40" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="40">
+                                                <Image.Source>
+                                                    <UriImageSource Uri="{Binding Path=Author.PathToPhoto}" CachingEnabled="False"/>
+                                                </Image.Source>
+                                            </Image>
                                         </Border>
                                         <VerticalStackLayout Margin="7,0,0,0">
                                             <Label Text="{Binding Path = Author.Username}" FontAttributes="Bold"/>

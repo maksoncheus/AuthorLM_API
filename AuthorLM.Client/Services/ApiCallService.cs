@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,6 +31,12 @@ namespace AuthorLM.Client.Services
                     b.CoverImagePath = _fileResolveService.ResolvePath(b.CoverImagePath);
                 });
             return books;
+        }
+        public async Task<IEnumerable<Genre>> GetGenres()
+        {
+            using HttpResponseMessage response = await _client.GetAsync("Genre/GetGenres");
+            List<Genre> genres = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<Genre>>(await response.Content.ReadAsStringAsync()).ToList();
+            return genres;
         }
         public async Task<IEnumerable<Comment>> GetCommentsByBookId(int id)
         {
@@ -126,12 +133,17 @@ namespace AuthorLM.Client.Services
         }
         public async Task<HttpResponseMessage> ChangePhoto(FileResult photo)
         {
+            MediaTypeHeaderValue mediaType = new MediaTypeHeaderValue(content.ContentType);
+            using MultipartFormDataContent form = new MultipartFormDataContent();
+            var fileStreamContent = new StreamContent(await content.OpenReadAsync());
+            form.Add(fileStreamContent, "userPhoto", content.FileName);
             string url = FileResolveService.ApiAddress + $"Account/ChangePhoto";
             var form = new MultipartFormDataContent();
             form.Add(new StreamContent(await photo.OpenReadAsync()), "userPhoto", photo.FileName);
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, url);
             _headerService.AddAuthorizationHeader(request);
             request.Content = form;
+            _headerService.AddAuthorizationHeader(request);
             return await _client.SendAsync(request);
         }
 
@@ -150,6 +162,7 @@ namespace AuthorLM.Client.Services
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
             _headerService.AddAuthorizationHeader(request);
             request.Content = form;
+            _headerService.AddAuthorizationHeader(request);
             return await _client.SendAsync(request);
         }
     }
