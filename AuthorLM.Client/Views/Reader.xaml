@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:sliders="clr-namespace:Syncfusion.Maui.Sliders;assembly=Syncfusion.Maui.Sliders"
+             x:Class="AuthorLM.Client.Views.Reader"
+             Title="Reader" NavigationPage.HasNavigationBar="False">
+    <Grid BackgroundColor="#bfa0a0" RowDefinitions="0.07*,0.93*">
+            <FlexLayout Margin="0,0,0,0" Grid.Row="0" AlignItems="Center" BackgroundColor="#a27676">
+                <ImageButton Margin="3,0,10,0" Command="{Binding Back}" Source="back.svg" WidthRequest="60" HeightRequest="60" VerticalOptions="Center" HorizontalOptions="Start">
+                    <ImageButton.Behaviors>
+                        <toolkit:TouchBehavior
+DefaultAnimationDuration="10"
+DefaultAnimationEasing="{x:Static Easing.CubicInOut}"
+PressedOpacity="0.6"
+PressedScale="0.5"
+/>
+                    </ImageButton.Behaviors>
+                </ImageButton>
+                <Label FontSize="Large" FlexLayout.Grow="1" Text="Профиль"/>
+                <Button x:Name="tableOfContents" Text="Содержание" Clicked="OpenTOCFlyout_Clicked" Margin="0,0,5,0"/>
+                <Button x:Name="settings" Text="Настройки" Clicked="OpenNavigationFlyout_Clicked" BackgroundColor="Purple" Margin="0,0,5,0"/>
+            </FlexLayout>
+        <ScrollView Grid.Row="1" Padding="0,10" x:Name="BookContent" Scrolled="BookContent_Scrolled" BackgroundColor="{Binding ThemeBackground}" Orientation="Vertical" >
+            <VerticalStackLayout>
+                <FlexLayout JustifyContent="SpaceBetween" HorizontalOptions="Fill">
+                    <Button Text="Предыдущая" Command="{Binding PrevChapter}" IsEnabled="{Binding CanMoveBack}"/>
+                    <Button Text="Следующая" Command="{Binding NextChapter}" IsEnabled="{Binding CanMoveForward}"/>
+                </FlexLayout>
+                <Label FontFamily="{Binding FontFamily}" Text="{Binding Title}" HorizontalTextAlignment="Center" FontAttributes="Bold" TextColor="{Binding ThemeForeground}" LineHeight="{Binding LineHeight}" Margin="{Binding Margin}" FontSize="{Binding FontSize}" FontAutoScalingEnabled="False" LineBreakMode="WordWrap"/>
+                <Label FontFamily="{Binding FontFamily}" Text="{Binding Annotation}" FontAttributes="Italic" TextColor="{Binding ThemeForeground}" LineHeight="{Binding LineHeight}" Margin="{Binding Margin}" FontSize="{Binding FontSize}" FontAutoScalingEnabled="False" LineBreakMode="WordWrap"/>
+                <Label FontFamily="{Binding FontFamily}" Text="{Binding Text}" TextColor="{Binding ThemeForeground}" LineHeight="{Binding LineHeight}" Margin="{Binding Margin}" FontSize="{Binding FontSize}" FontAutoScalingEnabled="False" LineBreakMode="WordWrap"/>
+                <FlexLayout JustifyContent="SpaceBetween">
+                    <Button Text="Предыдущая" Command="{Binding PrevChapter}" IsEnabled="{Binding CanMoveBack}"/>
+                    <Button Text="Следующая" Command="{Binding NextChapter}" IsEnabled="{Binding CanMoveForward}"/>
+                </FlexLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+        <FlexLayout Grid.RowSpan="2" x:Name="navigationFlyout" IsVisible="False" Direction="ColumnReverse" HorizontalOptions="Fill">
+            <Border x:Name="navigationContent" HeightRequest="350" StrokeThickness="0" HorizontalOptions="Fill" Background="#d6c2c2" ZIndex="3">
+                <VerticalStackLayout Padding="15" Spacing="10">
+                    <FlexLayout JustifyContent="SpaceEvenly" HorizontalOptions="Fill">
+                        <Button CornerRadius="90" BackgroundColor="White" Command="{Binding ChangeTheme}" CommandParameter="white"/>
+                        <Button CornerRadius="90" BackgroundColor="#fff0e6" Command="{Binding ChangeTheme}" CommandParameter="yellow"/>
+                        <Button CornerRadius="90" BackgroundColor="Gray" Command="{Binding ChangeTheme}" CommandParameter="gray"/>
+                        <Button CornerRadius="90" BackgroundColor="Black" Command="{Binding ChangeTheme}" CommandParameter="black"/>
+                    </FlexLayout>
+                    <FlexLayout>
+                        <Label Text="Шрифт" FlexLayout.Grow="1" VerticalTextAlignment="Center"/>
+                        <VerticalStackLayout>
+                            <CarouselView 
+                            IndicatorView="indicatorView"
+                            HeightRequest="50"
+                                WidthRequest="200"
+                            ItemsSource="{Binding Fonts}"
+                            CurrentItem="{Binding FontFamily}"
+                            x:Name="carousel"
+                            IsSwipeEnabled="True" IsBounceEnabled="True">
+                                <CarouselView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Horizontal"
+                                               SnapPointsType="MandatorySingle"
+                   ItemSpacing="20" />
+                                </CarouselView.ItemsLayout>
+                                <CarouselView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Label Text="{Binding}" FontSize="Large" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                                    </DataTemplate>
+                                </CarouselView.ItemTemplate>
+                            </CarouselView>
+                            <IndicatorView
+                            Margin="0, 10, 0, 0"
+                            x:Name="indicatorView"
+                            IndicatorColor="LightGray"
+                            SelectedIndicatorColor="DarkGray"
+                            HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </FlexLayout>
+                    <FlexLayout JustifyContent="SpaceEvenly">
+                        <VerticalStackLayout Spacing="10">
+                            <Border WidthRequest="65" HeightRequest="150">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="90"/>
+                                </Border.StrokeShape>
+                                <sliders:SfSlider MinimumWidthRequest="50" Interval="1" Value="{Binding FontSize}" Minimum="10" Maximum="64" Orientation="Vertical" >
+                                    <sliders:SfSlider.ThumbStyle>
+                                        <sliders:SliderThumbStyle Radius="0"/>
+                                    </sliders:SfSlider.ThumbStyle>
+                                    <sliders:SfSlider.TrackStyle>
+                                        <sliders:SliderTrackStyle ActiveSize="65" InactiveSize="65"/>
+                                    </sliders:SfSlider.TrackStyle>
+                                    <sliders:SfSlider.ThumbOverlayStyle>
+                                        <sliders:SliderThumbOverlayStyle Radius="0"/>
+                                    </sliders:SfSlider.ThumbOverlayStyle>
+                                </sliders:SfSlider>
+                            </Border>
+                            <Label Text="Размер" HorizontalTextAlignment="Center"/>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="10">
+                            <Border WidthRequest="65" HeightRequest="150">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="90"/>
+                                </Border.StrokeShape>
+                                <sliders:SfSlider MinimumWidthRequest="50" StepSize="20" Interval="20" Value="{Binding MarginMock}" Minimum="20" Maximum="100" Orientation="Vertical" >
+                                    <sliders:SfSlider.ThumbStyle>
+                                        <sliders:SliderThumbStyle Radius="0"/>
+                                    </sliders:SfSlider.ThumbStyle>
+                                    <sliders:SfSlider.TrackStyle>
+                                        <sliders:SliderTrackStyle ActiveSize="65" InactiveSize="65"/>
+                                    </sliders:SfSlider.TrackStyle>
+                                    <sliders:SfSlider.ThumbOverlayStyle>
+                                        <sliders:SliderThumbOverlayStyle Radius="0"/>
+                                    </sliders:SfSlider.ThumbOverlayStyle>
+                                </sliders:SfSlider>
+                            </Border>
+                            <Label Text="Поля" HorizontalTextAlignment="Center"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="10">
+                            <Border WidthRequest="65" HeightRequest="150">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="90"/>
+                                </Border.StrokeShape>
+                                <sliders:SfSlider ScaleX="15" MinimumWidthRequest="50" StepSize="0.25" Value="{Binding LineHeight}" Minimum="1" Maximum="2" Orientation="Vertical" >
+                                    <sliders:SfSlider.ThumbStyle>
+                                        <sliders:SliderThumbStyle Radius="0"/>
+                                    </sliders:SfSlider.ThumbStyle>
+                                    <sliders:SfSlider.TrackStyle>
+                                        <sliders:SliderTrackStyle ActiveSize="65" InactiveSize="65"/>
+                                    </sliders:SfSlider.TrackStyle>
+                                    <sliders:SfSlider.ThumbOverlayStyle>
+                                        <sliders:SliderThumbOverlayStyle Radius="0"/>
+                                    </sliders:SfSlider.ThumbOverlayStyle>
+                                </sliders:SfSlider>
+                            </Border>
+                            <Label Text="Строки" HorizontalTextAlignment="Center"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="10">
+                            <Border WidthRequest="65" HeightRequest="150">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="90"/>
+                                </Border.StrokeShape>
+                                <sliders:SfSlider MinimumWidthRequest="50" Value="{Binding Brightness}" Minimum="0" Maximum="1" Orientation="Vertical" >
+                                    <sliders:SfSlider.ThumbStyle>
+                                        <sliders:SliderThumbStyle Radius="0"/>
+                                    </sliders:SfSlider.ThumbStyle>
+                                    <sliders:SfSlider.TrackStyle>
+                                        <sliders:SliderTrackStyle ActiveSize="65" InactiveSize="65"/>
+                                    </sliders:SfSlider.TrackStyle>
+                                    <sliders:SfSlider.ThumbOverlayStyle>
+                                        <sliders:SliderThumbOverlayStyle Radius="0"/>
+                                    </sliders:SfSlider.ThumbOverlayStyle>
+                                </sliders:SfSlider>
+                            </Border>
+                            <Label Text="Яркость" HorizontalTextAlignment="Center"/>
+                        </VerticalStackLayout>
+                    </FlexLayout>
+                </VerticalStackLayout>
+            </Border>
+        </FlexLayout>
+
+
+        <FlexLayout Grid.RowSpan="2" x:Name="tocFlyout" IsVisible="False" Direction="ColumnReverse" HorizontalOptions="Fill">
+            <Border x:Name="tocContent" HeightRequest="350" StrokeThickness="0" HorizontalOptions="Fill" Background="#d6c2c2" ZIndex="3">
+                <CollectionView ItemsSource="{Binding Sections}" >
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+                    </CollectionView.ItemsLayout>
+                </CollectionView>
+            </Border>
+        </FlexLayout>
+    </Grid>
+</ContentPage>

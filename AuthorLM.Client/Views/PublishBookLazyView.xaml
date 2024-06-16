@@ -8,7 +8,7 @@
     IsRefreshing="{Binding IsRefreshing}">
         <ScrollView BackgroundColor="#bfa0a0" Orientation="Vertical">
             <VerticalStackLayout Grid.Row="1" Spacing="10" Padding="15">
-                <HorizontalStackLayout>
+                <FlexLayout>
                     <VerticalStackLayout Spacing="10">
                         <Border HeightRequest="160" WidthRequest="120" BackgroundColor="#cbb3b3" VerticalOptions="FillAndExpand" Margin="0,0,15,0" >
                             <Border.StrokeShape>
@@ -19,20 +19,20 @@
                         <Button Command="{Binding ChangePhoto}" Text="Изменить обложку" WidthRequest="120" Margin="0,0,15,0"/>
                     </VerticalStackLayout>
                     
-                    <VerticalStackLayout Spacing="15" HorizontalOptions="Fill" WidthRequest="320">
-                        <Entry Text="{Binding Title}" Placeholder="Название" FontAttributes="Bold" FontSize="Large"/>
-                        <Picker ItemsSource="{Binding Genres}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedGenre}"/>
+                    <VerticalStackLayout Spacing="15" HorizontalOptions="FillAndExpand" FlexLayout.Grow="1">
+                        <Editor Text="{Binding Title}" Placeholder="Название" FontAttributes="Bold" FontSize="Large"/>
+                        <Picker Title="Выберите жанр" ItemsSource="{Binding Genres}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedGenre}"/>
                         <Border Padding="5" HeightRequest="100">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="3"/>
                             </Border.StrokeShape>
-                            <Editor Placeholder="Описание" Text="{Binding Description}" PlaceholderColor="Black" />
+                            <Editor Placeholder="Описание" HorizontalOptions="Fill" Margin="0,0,10,0" Text="{Binding Description}" PlaceholderColor="Black" />
                         </Border>
                     </VerticalStackLayout>
-                </HorizontalStackLayout>
+                </FlexLayout>
                 <BoxView Color="Gray"  HeightRequest="2" HorizontalOptions="Fill" Margin="1"/>
 
-                <Button Text="Добавить контент книги (fb2, txt)" Command="{Binding ChangeContent}" TextColor="White" BackgroundColor="#cc00ff" Opacity="0.75"></Button>
+                <Button Text="Добавить контент книги (fb2)" Command="{Binding ChangeContent}" TextColor="White" BackgroundColor="#cc00ff" Opacity="0.75"></Button>
                 
                 <Button Text="Опубликовать" Command="{Binding Publish}" FontSize="Small" HeightRequest="40" BackgroundColor="Purple"/>
 

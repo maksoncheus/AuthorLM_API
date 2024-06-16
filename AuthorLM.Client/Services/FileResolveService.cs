@@ -9,7 +9,7 @@ namespace AuthorLM.Client.Services
     public class FileResolveService
     {
 
-        internal const string ApiAddress = "http://192.168.1.101:5020/";
+        internal const string ApiAddress = "http://192.168.0.15:5020/";
         internal const string contentWebRoot = "wwwroot";
         public string ResolvePath(string path)
         {

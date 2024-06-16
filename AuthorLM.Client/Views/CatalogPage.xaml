@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="AuthorLM.Client.Views.CatalogPage"
+             NavigationPage.HasNavigationBar="False"
+             Title="CatalogPage">
+    <Grid BackgroundColor="#a27676" RowDefinitions="0.07*,0.93*">
+        <FlexLayout Margin="0,0,0,0" Grid.Row="0" AlignItems="Center" BackgroundColor="#a27676">
+            <ImageButton Margin="3,0,10,0" Command="{Binding Back}" Source="back.svg" WidthRequest="50" HeightRequest="50" VerticalOptions="Center" HorizontalOptions="Start">
+                <ImageButton.Behaviors>
+                    <toolkit:TouchBehavior
+                DefaultAnimationDuration="10"
+                DefaultAnimationEasing="{x:Static Easing.CubicInOut}"
+                PressedOpacity="0.6"
+                PressedScale="0.5"
+                    />
+                </ImageButton.Behaviors>
+            </ImageButton>
+            <Label FontSize="Large" Text="Каталог"/>
+        </FlexLayout>
+
+        <ScrollView Grid.Row="1" BackgroundColor="#bfa0a0" Orientation="Vertical">
+            <VerticalStackLayout>
+                <Button x:Name="searchButton" HorizontalOptions="EndAndExpand" Clicked="searchButton_Clicked" BackgroundColor="Transparent" Text="Параметры поиска" />
+                <VerticalStackLayout Padding="10,0" x:Name="searchContent" FlowDirection="LeftToRight" AnchorY="0" ScaleY="0" VerticalOptions="Start" IsVisible="False">
+                    <FlexLayout AlignItems="Center" HeightRequest="50">
+                        <Label Text="Поиск" WidthRequest="100"/>
+                        <Entry FlexLayout.Grow="1" Text="{Binding UserSearchString}"/>
+                    </FlexLayout>
+                    <FlexLayout AlignItems="Center" HeightRequest="50">
+                        <Label Text="Жанр" WidthRequest="100"/>
+                        <Picker Title="Выбрать" ItemsSource="{Binding Genres}" ItemDisplayBinding="{Binding Name}" FlexLayout.Grow="1" SelectedItem="{Binding UserSelectedGenre}"/>
+                    </FlexLayout>
+                    <FlexLayout AlignItems="Center" HeightRequest="50">
+                        <Label Text="Сортировка" WidthRequest="100"/>
+                        <Picker Title="Сортировка" ItemsSource="{Binding SortDesc}" FlexLayout.Grow="1" SelectedIndex="{Binding SortIndex}"/>
+                    </FlexLayout>
+                    <Button HorizontalOptions="End" BackgroundColor="Purple" TextColor="White" Command="{Binding Search}"/>
+                </VerticalStackLayout>
+                <CollectionView
+Style="{DynamicResource bookCollectionView}"
+SelectedItem="{Binding SelectedBook}"
+ItemsSource="{Binding Books}"
+ItemTemplate="{DynamicResource bookColLibraryItemTemp}">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+                </CollectionView>
+                <FlexLayout HorizontalOptions="Fill" JustifyContent="SpaceBetween">
+                    <Button Command="{Binding Previous}" IsEnabled="{Binding HasPrev, Mode=TwoWay}" Margin="10,0" WidthRequest="100" FontSize="Medium" BackgroundColor="Transparent" TextColor="Purple" Text="Назад">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="TextColor" Value="Purple"/>
+                                <Setter Property="Opacity" Value="1"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsEnabled" Value="False" TargetType="Button">
+                                        <Trigger.Setters>
+                                            <Setter Property="BackgroundColor" Value="Transparent"/>
+                                            <Setter Property="Opacity" Value="0.5"/>
+                                        </Trigger.Setters>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Command="{Binding Next}" IsEnabled="{Binding HasNext, Mode=TwoWay}" Margin="10,0" WidthRequest="100" FontSize="Medium" BackgroundColor="Transparent" TextColor="Purple" Text="Вперед">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="TextColor" Value="Purple"/>
+                                <Setter Property="Opacity" Value="1"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsEnabled" Value="False" TargetType="Button">
+                                        <Trigger.Setters>
+                                            <Setter Property="BackgroundColor" Value="Transparent"/>
+                                            <Setter Property="Opacity" Value="0.5"/>
+                                        </Trigger.Setters>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </FlexLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

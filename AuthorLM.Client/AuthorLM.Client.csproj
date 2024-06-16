@@ -70,7 +70,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Fonts\Montserrat-VariableFont_wght.ttf" />
+	  <None Remove="Resources\Fonts\Raleway-VariableFont_wght.ttf" />
+	  <None Remove="Resources\Fonts\Roboto-Regular.ttf" />
 	  <None Remove="Resources\Images\back.svg" />
+	  <None Remove="Resources\Images\cross.svg" />
+	  <None Remove="Resources\Images\genre.svg" />
 	  <None Remove="Resources\Images\library.svg" />
 	  <None Remove="Resources\Images\like.svg" />
 	  <None Remove="Resources\Images\logo.png" />
@@ -80,15 +85,20 @@
 	  <None Remove="Resources\Images\profile.svg" />
 	  <None Remove="Resources\Images\rules.svg" />
 	  <None Remove="Resources\Images\search.svg" />
+	  <None Remove="Resources\Images\trash.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="8.0.1" />
+		<PackageReference Include="FB2Library" Version="1.3.3" />
 		<PackageReference Include="ImageCropper.Maui" Version="1.1.0.7" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.20" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.20" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Plugin.Maui.ScreenBrightness" Version="1.0.0-preview3" />
+		<PackageReference Include="Syncfusion.Maui.Sliders" Version="26.1.35" />
+		<PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -102,8 +112,17 @@
 	  <Compile Update="Views\MainPageLazyView.xaml.cs">
 	    <DependentUpon>MainPageLazyView.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\MyLibraryPage.xaml.cs">
+	    <DependentUpon>MyLibraryPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\ProfilePage.xaml.cs">
 	    <DependentUpon>ProfilePage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\ReadBooksPage.xaml.cs">
+	    <DependentUpon>ReadBooksPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\FavoriteBooksPage.xaml.cs">
+	    <DependentUpon>FavoriteBooksPage.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Views\RegistrationPage.xaml.cs">
 	    <DependentUpon>RegistrationPage.xaml</DependentUpon>
@@ -120,6 +139,9 @@
 	  <MauiXaml Update="Views\BookPageLazyView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\CatalogPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\ChangePasswordPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -127,6 +149,8 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\EditProfilePageLazyView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
 	  <MauiXaml Update="Views\MainPageLazyView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -145,7 +169,22 @@
 	  <MauiXaml Update="Views\PublishBookPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\ReadBooksPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\FavoriteBooksPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Reader.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ReadingBooksPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\RegistrationPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\RulesPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AuthorLM.Client.Views.FavoriteBooksPage"
+             Title="ReadingBooksPage">
+    <RefreshView
+Command="{Binding Refresh}"
+IsRefreshing="{Binding IsRefreshing}"
+>
+        <ScrollView BackgroundColor="#bfa0a0" Orientation="Vertical" ZIndex="0">
+            <CollectionView
+Style="{DynamicResource bookCollectionView}"
+SelectedItem="{Binding SelectedBook}"
+ItemsSource="{Binding FavoriteBooks}"
+ItemTemplate="{DynamicResource bookColLibraryItemTemp}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" />
+                </CollectionView.ItemsLayout>
+            </CollectionView>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>

@@ -3,15 +3,30 @@ using System.Text;
 
 namespace AuthorLM_API.Data.Encryption
 {
+    /// <summary>
+    /// Класс, обеспечивающий шифрование и дешифрование данных
+    /// </summary>
     public static class PasswordCipher
     {
-        // Данная константа нужна для определения размера ключа алгоритма шифрования в битах.
-        // Позже происходит деление на 8 для получения соответствующего количества байт.
+        /// <summary>
+        /// Размер ключа алгоритма шифрования в битах.
+        /// </summary>
+        /// 
         private const int _keysize = 128;
 
-        // Данная константа определяет количество итераций метода генерации байт пароля.
+        /// <summary>
+        /// Количество итераций метода генерации байт пароля.
+        /// </summary>
         private const int _derivationIterations = 1000;
+        /// <summary>
+        /// Секретное слово, используемое как ключ шифрования.
+        /// </summary>
         private const string passPhrase = "AuthorLMSuperSecureStringNeverBeenHacked";
+        /// <summary>
+        /// Метод шифрования данных
+        /// </summary>
+        /// <param name="plainText">Строка обычного текста, который будет зашифрован</param>
+        /// <returns>Зашифрованная строка</returns>
         public static string Encrypt(string plainText)
         {
             // Соль и исходный вектор генерируются каждый вызов метода случайным образом,
@@ -19,6 +34,7 @@ namespace AuthorLM_API.Data.Encryption
             // так что такие же соль и ИВ могут быть использованы во время дешифровки.  
             var saltStringBytes = Generate128BitsOfRandomEntropy();
             var ivStringBytes = Generate128BitsOfRandomEntropy();
+            // Преобразование строки в массив байт.
             var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
             using (var password = new Rfc2898DeriveBytes(passPhrase, saltStringBytes, _derivationIterations))
             {
@@ -48,7 +64,11 @@ namespace AuthorLM_API.Data.Encryption
                 }
             }
         }
-
+        /// <summary>
+        /// Метод дешифрования
+        /// </summary>
+        /// <param name="cipherText">Зашифрованный текст</param>
+        /// <returns>Дешифрованный текст</returns>
         public static string Decrypt(string cipherText)
         {
             // Получить полный поток байтов, представляющих:
@@ -83,7 +103,10 @@ namespace AuthorLM_API.Data.Encryption
                 }
             }
         }
-
+        /// <summary>
+        /// Генерация массива байт со случайными значениями
+        /// </summary>
+        /// <returns>16 байт случайных значений</returns>
         private static byte[] Generate128BitsOfRandomEntropy()
         {
             var randomBytes = new byte[16];

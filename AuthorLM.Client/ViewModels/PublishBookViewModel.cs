@@ -147,13 +147,18 @@ namespace AuthorLM.Client.ViewModels
             {
                 try
                 {
-                    var result = await FilePicker.PickAsync(new() { PickerTitle = "Выберите файл (fb2, txt)" });
+                    var result = await FilePicker.PickAsync(new() { PickerTitle = "Выберите файл (fb2)" });
                     if (result != null)
                     {
                         if (result.FileName.EndsWith("fb2", StringComparison.OrdinalIgnoreCase) ||
                             result.FileName.EndsWith("txt", StringComparison.OrdinalIgnoreCase))
                         {
                             _content = result;
+                            return;
+                        }
+                        else
+                        {
+                            await Toast.Make("Файл должен быть в формате fb2").Show();
                             return;
                         }
                     }

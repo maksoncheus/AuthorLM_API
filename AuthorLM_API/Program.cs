@@ -43,6 +43,8 @@ namespace AuthorLM_API
                         ValidateIssuerSigningKey = true,
                     };
                 });
+            //new ImageResizer.WebConfig().Install(ImageResizer.Configuration.Config.Current);
+            //builder.Configuration.Add(ImageResizer.Configuration.Config.Current);
             builder.Services.AddTransient<IPublishBookService, PublishBookService>();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -78,6 +80,7 @@ namespace AuthorLM_API
 
             var app = builder.Build();
 
+            
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;

@@ -1,4 +1,5 @@
 ﻿using DbLibrary.Entities;
+using DbLibrary.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,11 +33,84 @@ namespace AuthorLM.Client.Services
                 });
             return books;
         }
-        public async Task<IEnumerable<Genre>> GetGenres()
+        public async Task<Stream> GetBookContent(int id)
         {
-            using HttpResponseMessage response = await _client.GetAsync("Genre/GetGenres");
-            List<Genre> genres = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<Genre>>(await response.Content.ReadAsStringAsync()).ToList();
-            return genres;
+            string url = FileResolveService.ApiAddress + $"Book/GetBookContent?id={id}";
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+            _headerService.AddAuthorizationHeader(request);
+            var response = await _client.SendAsync(request);
+            return response.Content.ReadAsStream();
+        }
+        public async Task<string> SetProgress(int bookId, int section, double scroll)
+        {
+            string url = FileResolveService.ApiAddress + $"Book/SetProgress?bookId={bookId}&section={section}&scroll={scroll}";
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+            _headerService.AddAuthorizationHeader(request);
+            var response = await _client.SendAsync(request);
+            return await response.Content.ReadAsStringAsync();
+        }
+        public async Task<Progress> GetProgress(int bookId)
+        {
+            string url = FileResolveService.ApiAddress + $"Book/GetProgress?bookId={bookId}";
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+            _headerService.AddAuthorizationHeader(request);
+            var response = await _client.SendAsync(request);
+            try
+            {
+                return Newtonsoft.Json.JsonConvert.DeserializeObject<Progress>(await response.Content.ReadAsStringAsync());
+            }
+            catch
+            {
+                return new();
+            }
+        }
+        public async Task<PaginatedList<Book>> GetBooksWithFilter(string? searchString = null,
+            int? genreId = null,
+            bool? needToReSearch = null,
+            int? sortIndex = null,
+            int? pageNumber = null)
+        {
+            string url = FileResolveService.ApiAddress + $"Book/GetBooksWithFilter";
+            
+            if (genreId != null || needToReSearch != null || searchString != null || sortIndex != null || pageNumber != null)
+                url += "?";
+            if (genreId != null)
+                url += $"genreId={genreId.Value}";
+            if (needToReSearch != null)
+            {
+                if (!url.EndsWith("?"))
+                    url += "&";
+                url += $"needToReSearch={needToReSearch.Value}";
+            }
+            if (searchString != null)
+            {
+                if (!url.EndsWith("?"))
+                    url += "&";
+                url += $"searchString={searchString}";
+            }
+            if (sortIndex != null)
+            {
+                if (!url.EndsWith("?"))
+                    url += "&";
+                url += $"sortIndex={sortIndex.Value}";
+            }
+            if (pageNumber != null)
+            {
+                if (!url.EndsWith("?"))
+                    url += "&";
+                url += $"pageNumber={pageNumber.Value}";
+            }
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+            _headerService.AddAuthorizationHeader(request);
+            HttpResponseMessage response = await _client.SendAsync(request);
+            PaginatedList<Book> books = Newtonsoft.Json.JsonConvert.DeserializeObject<PaginatedList<Book>>(await response.Content.ReadAsStringAsync());
+            if (books != null && books.Count > 0)
+                books.ForEach((b) =>
+                {
+                    b.ContentPath = _fileResolveService.ResolvePath(b.ContentPath);
+                    b.CoverImagePath = _fileResolveService.ResolvePath(b.CoverImagePath);
+                });
+            return books;
         }
         public async Task<IEnumerable<Comment>> GetCommentsByBookId(int id)
         {
@@ -47,6 +121,20 @@ namespace AuthorLM.Client.Services
             foreach (Comment comment in comments)
                 comment.Author.PathToPhoto = _fileResolveService.ResolvePath(comment.Author.PathToPhoto);
             return comments;
+        }
+        public async Task<HttpResponseMessage> RemoveComment(int commentId)
+        {
+            string url = FileResolveService.ApiAddress + $"Comment/RemoveComment?commentId={commentId}";
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, url);
+            _headerService.AddAuthorizationHeader(request);
+            return await _client.SendAsync(request);
+        }
+        public async Task<HttpResponseMessage> RemoveProfile(int id)
+        {
+            string url = FileResolveService.ApiAddress + $"Account/RemoveProfile?id={id}";
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, url);
+            _headerService.AddAuthorizationHeader(request);
+            return await _client.SendAsync(request);
         }
         public async Task<IEnumerable<Like>> GetLikesByBookId(int id)
         {
@@ -133,10 +221,6 @@ namespace AuthorLM.Client.Services
         }
         public async Task<HttpResponseMessage> ChangePhoto(FileResult photo)
         {
-            MediaTypeHeaderValue mediaType = new MediaTypeHeaderValue(content.ContentType);
-            using MultipartFormDataContent form = new MultipartFormDataContent();
-            var fileStreamContent = new StreamContent(await content.OpenReadAsync());
-            form.Add(fileStreamContent, "userPhoto", content.FileName);
             string url = FileResolveService.ApiAddress + $"Account/ChangePhoto";
             var form = new MultipartFormDataContent();
             form.Add(new StreamContent(await photo.OpenReadAsync()), "userPhoto", photo.FileName);
@@ -164,6 +248,80 @@ namespace AuthorLM.Client.Services
             request.Content = form;
             _headerService.AddAuthorizationHeader(request);
             return await _client.SendAsync(request);
+        }
+        public async Task<string> GetLibraryEntry(int bookId)
+        {
+            string url = FileResolveService.ApiAddress + $"Book/GetLibraryEntry?bookId={bookId}";
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+            _headerService.AddAuthorizationHeader(request);
+            HttpResponseMessage response = await _client.SendAsync(request);
+            if (!response.IsSuccessStatusCode) return "none";
+            return await response.Content.ReadAsStringAsync();
+
+        }
+        public async Task<bool> AddBookToLibrary(int bookId, string entry)
+        {
+            string url = FileResolveService.ApiAddress + $"Book/AddBookToLibrary?bookId={bookId}&entry={entry}";
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+            _headerService.AddAuthorizationHeader(request);
+            HttpResponseMessage response = await _client.SendAsync(request);
+            if (!response.IsSuccessStatusCode) return false;
+            return true;
+        }
+        public async Task<bool> RemoveBookFromLibrary(int bookId)
+        {
+            string url = FileResolveService.ApiAddress + $"Book/RemoveBookFromLibrary?bookId={bookId}";
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+            _headerService.AddAuthorizationHeader(request);
+            HttpResponseMessage response = await _client.SendAsync(request);
+            if (!response.IsSuccessStatusCode) return false;
+            return true;
+        }
+        public async Task<IEnumerable<Book>> GetReadBooks()
+        {
+            
+            string url = FileResolveService.ApiAddress + $"Book/GetReadBooks";
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+            _headerService.AddAuthorizationHeader(request);
+            HttpResponseMessage response = await _client.SendAsync(request);
+            List<Book> books = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<UserReadBooks>>(await response.Content.ReadAsStringAsync()).Select(x => x.Book).ToList();
+            if (books != null && books.Count > 0)
+                books.ForEach((b) =>
+                {
+                    b.ContentPath = _fileResolveService.ResolvePath(b.ContentPath);
+                    b.CoverImagePath = _fileResolveService.ResolvePath(b.CoverImagePath);
+                });
+            return books;
+        }
+        public async Task<IEnumerable<Book>> GetReadingBooks()
+        {
+            string url = FileResolveService.ApiAddress + $"Book/GetReadingBooks";
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+            _headerService.AddAuthorizationHeader(request);
+            HttpResponseMessage response = await _client.SendAsync(request);
+            List<Book> books = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<UserReadBooks>>(await response.Content.ReadAsStringAsync()).Select(x => x.Book).ToList();
+            if (books != null && books.Count > 0)
+                books.ForEach((b) =>
+                {
+                    b.ContentPath = _fileResolveService.ResolvePath(b.ContentPath);
+                    b.CoverImagePath = _fileResolveService.ResolvePath(b.CoverImagePath);
+                });
+            return books;
+        }
+        public async Task<IEnumerable<Book>> GetFavoriteBooks()
+        {
+            string url = FileResolveService.ApiAddress + $"Book/GetFavoriteBooks";
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+            _headerService.AddAuthorizationHeader(request);
+            HttpResponseMessage response = await _client.SendAsync(request);
+            List<Book> books = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<UserReadBooks>>(await response.Content.ReadAsStringAsync()).Select(x => x.Book).ToList();
+            if (books != null && books.Count > 0)
+                books.ForEach((b) =>
+                {
+                    b.ContentPath = _fileResolveService.ResolvePath(b.ContentPath);
+                    b.CoverImagePath = _fileResolveService.ResolvePath(b.CoverImagePath);
+                });
+            return books;
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using AuthorLM.Client.Services;
 using CommunityToolkit.Maui.Alerts;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace AuthorLM.Client.ViewModels
@@ -83,12 +85,21 @@ namespace AuthorLM.Client.ViewModels
                 HttpResponseMessage response = await _callService.Register(_username, _email, _password);
                 if(!response.IsSuccessStatusCode)
                 {
-                    await Toast.Make(Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(await response.Content.ReadAsStringAsync()).FirstOrDefault()).Show();
+                    try
+                    {
+                        await Toast.Make(Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(await response.Content.ReadAsStringAsync()).FirstOrDefault()).Show();
+                    }
+                    catch
+                    {
+                        await Toast.Make("Что-то пошло не так").Show();
+                    }
                     return;
                 }
-                var authResponse = await _callService.Authenticate(_username, _password);
-                string token = await authResponse.Content.ReadAsStringAsync();
-                _accountService.LogIn(token);
+                HttpResponseMessage responseLogin = await _callService.Authenticate(_username, _password);
+                string responseContent = await responseLogin.Content.ReadAsStringAsync();
+                var def = new { token = "", isAdmin = false };
+                var result = JsonConvert.DeserializeAnonymousType(responseContent, def);
+                _accountService.LogIn(result.token, result.isAdmin);
                 await _navigationService.NavigateToRoot();
                 await Toast.Make("Вы успешно зарегистрировались!").Show();
             });

@@ -8,7 +8,17 @@
              NavigationPage.HasNavigationBar="False">
     <Grid BackgroundColor="#a27676" RowDefinitions="0.07*,0.93*">
         <FlexLayout Margin="0,0,0,0" Grid.Row="0" AlignItems="Center" BackgroundColor="#a27676">
-            <ImageButton FlexLayout.Grow="1" Margin="3,0,0,0" Command="{Binding Back}" Source="back.svg" WidthRequest="60" HeightRequest="60" VerticalOptions="Center" HorizontalOptions="Start"></ImageButton>
+            <ImageButton Margin="3,0,0,0" FlexLayout.Grow="1" Command="{Binding Back}" Source="back.svg" WidthRequest="60" HeightRequest="60" VerticalOptions="Center" HorizontalOptions="Start">
+                <ImageButton.Behaviors>
+                    <toolkit:TouchBehavior
+                    DefaultAnimationDuration="10"
+                    DefaultAnimationEasing="{x:Static Easing.CubicInOut}"
+                    PressedOpacity="0.6"
+                    PressedScale="0.5"
+                    />
+                </ImageButton.Behaviors>
+            </ImageButton>
+            <Button Text="Удалить" Command="{Binding Delete}" IsVisible="{Binding CanDelete}" BackgroundColor="DarkRed" Margin="0,0,5,0"/>
         </FlexLayout>
         <ActivityIndicator Grid.Row="1" Color="Purple" WidthRequest="100" HeightRequest="100" IsRunning="True"/>
         <toolkit:LazyView Grid.Row="1" x:Name="lazyViewEdit" x:TypeArguments="local:EditProfilePageLazyView"/>

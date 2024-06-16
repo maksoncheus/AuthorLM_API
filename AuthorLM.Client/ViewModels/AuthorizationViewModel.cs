@@ -1,6 +1,7 @@
 ﻿using AuthorLM.Client.Services;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,8 +59,10 @@ namespace AuthorLM.Client.ViewModels
                     await Toast.Make("Вы ввели неверные данные!").Show();
                     return;
                 }
-                string token = await response.Content.ReadAsStringAsync();
-                _accountService.LogIn(token);
+                string responseContent = await response.Content.ReadAsStringAsync();
+                var def = new { token = "", isAdmin = false };
+                var result = JsonConvert.DeserializeAnonymousType(responseContent, def);
+                _accountService.LogIn(result.token, result.isAdmin);
                 await _navigationService.NavigateToRoot();
                 await Toast.Make("Вы успешно авторизовались").Show();
             });

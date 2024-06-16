@@ -14,6 +14,26 @@ namespace AuthorLM.Client.ViewModels
 {
     public class MainPageViewModel : ViewModel
     {
+        private bool _isInitialized = true;
+        public bool IsInitialized
+        {
+            get => _isInitialized;
+            set
+            {
+                _isInitialized = value;
+                OnPropertyChanged();
+            }
+        }
+        private bool _isAdmin = false;
+        public bool IsAdmin
+        {
+            get => _isAdmin;
+            set
+            {
+                _isAdmin = value;
+                OnPropertyChanged();
+            }
+        }
         private ObservableCollection<Book> _newBooks;
         public ObservableCollection<Book> NewBooks
         {
@@ -54,43 +74,6 @@ namespace AuthorLM.Client.ViewModels
                 OnPropertyChanged();
             }
         }
-        private bool _isProfileFlyoutVisible;
-        public bool IsProfileFlyoutVisible
-        {
-            get => _isProfileFlyoutVisible;
-            set
-            {
-                _isProfileFlyoutVisible = value;
-                OnPropertyChanged();
-            }
-        }
-        public Command OpenProfileFlyout
-        {
-            get => new(() => IsProfileFlyoutVisible = true);
-        }
-        public Command CloseProfileFlyout
-        {
-            get => new(() => IsProfileFlyoutVisible = false);
-        }
-
-        private bool _isNavigationFlyoutVisible;
-        public bool IsNavigationFlyoutVisible
-        {
-            get => _isNavigationFlyoutVisible;
-            set
-            {
-                _isNavigationFlyoutVisible = value;
-                OnPropertyChanged();
-            }
-        }
-        public Command OpenNavigationFlyout
-        {
-            get => new(() => IsNavigationFlyoutVisible = true);
-        }
-        public Command CloseNavigationFlyout
-        {
-            get => new(() => IsNavigationFlyoutVisible = false);
-        }
         public Command NavigateToBook
         {
             get => new(async (o) =>
@@ -105,6 +88,14 @@ namespace AuthorLM.Client.ViewModels
         {
             get => new(async () => await _navigationService.NavigateToMyLibrary());
         }
+        public Command NavigateToRules
+        {
+            get => new(async () => await _navigationService.NavigateToRules());
+        }
+        public Command NavigateToCatalog
+        {
+            get => new(async (searchString) => await _navigationService.NavigateToCatalog((string?)searchString));
+        }
         public string AppName { get => App.APP_NAME; }
         public Command RefreshPage
         {
@@ -117,8 +108,6 @@ namespace AuthorLM.Client.ViewModels
         }
         public override async Task OnNavigatedTo()
         {
-            CloseNavigationFlyout.Execute(null);
-            CloseProfileFlyout.Execute(null);
             if(_books == null) Books = new();
             Task.Run(_init);
         }
@@ -132,7 +121,6 @@ namespace AuthorLM.Client.ViewModels
             {
                 _accountService.LogOut();
                 IsLoggedIn = _accountService.IsLoggedIn;
-                CloseProfileFlyout.Execute(null);
                 CurrentUser=null;
             });
         }
@@ -146,6 +134,7 @@ namespace AuthorLM.Client.ViewModels
                     CurrentUser = await _apiService.GetDetails();
                 }
             }).ContinueWith(async (t) => await Task.Run(GetBooks));
+            IsInitialized = false;
         }
         private User? _currentUser;
         public User? CurrentUser
@@ -153,9 +142,18 @@ namespace AuthorLM.Client.ViewModels
             get => _currentUser ?? new User();
             set
             {
+                if (value == null)
+                {
+                    _currentUser = new User();
+                    _accountService.LogOut();
+                    IsAdmin = false;
+                    OnPropertyChanged();
+                    return;
+                }
                 string path = value.PathToPhoto;
                 value.PathToPhoto = "";
                 _currentUser = value;
+                IsAdmin = _accountService.IsAdmin;
                 OnPropertyChanged();
                 _currentUser.PathToPhoto = path;
                 OnPropertyChanged();
@@ -213,13 +211,10 @@ namespace AuthorLM.Client.ViewModels
                 MostLikedBooks = new();
             }
             IEnumerable<Book> books = await _apiService.GetAllBooks();
-            if (books.Count() != Books.Count)
-            {
                 Books = new(books);
                 PopularBooks = new ObservableCollection<Book>(_books.OrderBy(b => b.Rating).Take(10));
                 NewBooks = new ObservableCollection<Book>(_books.OrderByDescending(b => b.PublicationDate).Take(10));
                 MostLikedBooks = new ObservableCollection<Book>(_books.OrderByDescending(b => b.Rating).Take(10));
-            }
         }
     }
 }

@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <TabbedPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+            xmlns:local="clr-namespace:AuthorLM.Client.Views"
             xmlns:Android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls"
             x:Class="AuthorLM.Client.Views.MyLibraryPage"
             Android:TabbedPage.ToolbarPlacement="Bottom"
+            NavigationPage.HasNavigationBar="True"
+            BarBackgroundColor="#bfa0a0"
+            BarTextColor="Purple"
              >
-    <ContentPage Title="Tab1">
-        <Button Command="{Binding ToBook}"/>
-    </ContentPage>
-    <ContentPage Title="Tab2"/>
-    <ContentPage Title="Tab3"/>
+    <Page.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="#bfa0a0"/>
+    </Page.Behaviors>
+    <local:ReadingBooksPage Title="Читаю"/>
+    <local:ReadBooksPage Title="Прочитано"/>
+    <local:FavoriteBooksPage Title="Избранное"/>
 </TabbedPage>

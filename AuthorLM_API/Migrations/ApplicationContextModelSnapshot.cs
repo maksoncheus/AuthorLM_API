@@ -73,6 +73,28 @@ namespace AuthorLM_API.Migrations
                     b.ToTable("Books");
                 });
 
+            modelBuilder.Entity("DbLibrary.Entities.Chapter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("Chapters");
+                });
+
             modelBuilder.Entity("DbLibrary.Entities.Comment", b =>
                 {
                     b.Property<int>("Id")
@@ -141,6 +163,35 @@ namespace AuthorLM_API.Migrations
                     b.HasIndex("LikerId");
 
                     b.ToTable("Likes");
+                });
+
+            modelBuilder.Entity("DbLibrary.Entities.Progress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Scroll")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Section")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Progresses");
                 });
 
             modelBuilder.Entity("DbLibrary.Entities.Role", b =>
@@ -215,6 +266,8 @@ namespace AuthorLM_API.Migrations
 
                     b.HasKey("UserId", "BookId");
 
+                    b.HasIndex("BookId");
+
                     b.ToTable("UserFavoriteBooks");
                 });
 
@@ -228,6 +281,8 @@ namespace AuthorLM_API.Migrations
 
                     b.HasKey("UserId", "BookId");
 
+                    b.HasIndex("BookId");
+
                     b.ToTable("UserReadBooks");
                 });
 
@@ -240,6 +295,8 @@ namespace AuthorLM_API.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("UserId", "BookId");
+
+                    b.HasIndex("BookId");
 
                     b.ToTable("UserReadingBooks");
                 });
@@ -261,6 +318,17 @@ namespace AuthorLM_API.Migrations
                     b.Navigation("Author");
 
                     b.Navigation("Genre");
+                });
+
+            modelBuilder.Entity("DbLibrary.Entities.Chapter", b =>
+                {
+                    b.HasOne("DbLibrary.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
                 });
 
             modelBuilder.Entity("DbLibrary.Entities.Comment", b =>
@@ -301,6 +369,25 @@ namespace AuthorLM_API.Migrations
                     b.Navigation("Liker");
                 });
 
+            modelBuilder.Entity("DbLibrary.Entities.Progress", b =>
+                {
+                    b.HasOne("DbLibrary.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DbLibrary.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DbLibrary.Entities.User", b =>
                 {
                     b.HasOne("DbLibrary.Entities.Role", "Role")
@@ -310,6 +397,63 @@ namespace AuthorLM_API.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("DbLibrary.Entities.UserFavoriteBooks", b =>
+                {
+                    b.HasOne("DbLibrary.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DbLibrary.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DbLibrary.Entities.UserReadBooks", b =>
+                {
+                    b.HasOne("DbLibrary.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DbLibrary.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DbLibrary.Entities.UserReadingBooks", b =>
+                {
+                    b.HasOne("DbLibrary.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DbLibrary.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

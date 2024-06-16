@@ -52,6 +52,12 @@ namespace AuthorLM.Client.Services
             => NavigateToPage<PublishBookPage>();
         public Task NavigateToMyLibrary()
             => NavigateToPage<MyLibraryPage>();
+        public Task NavigateToReader(object id)
+            => NavigateToPage<Reader>(id);
+        public Task NavigateToRules()
+            => NavigateToPage<RulesPage>();
+        public Task NavigateToCatalog(string? searchString)
+            => NavigateToPage<CatalogPage>(searchString);
         public Page GetCurrentPage() => Navigation.NavigationStack.Last();
         public Task NavigateToRoot()
             => Navigation.PopToRootAsync();
@@ -69,10 +75,6 @@ namespace AuthorLM.Client.Services
             }    
             else
                 throw new InvalidOperationException($"Unable to resolve type {typeof(T).FullName}");
-        }
-        public Page GetCurrentPage()
-        {
-            return Navigation.NavigationStack.Last();
         }
         private async void Page_NavigatedTo(object? sender, NavigatedToEventArgs e)
             => await CallNavigatedTo(sender as Page);

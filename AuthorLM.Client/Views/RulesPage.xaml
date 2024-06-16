@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AuthorLM.Client.Views.RulesPage"
+             Title="Правила">
+    <ScrollView>
+        <VerticalStackLayout Padding="15">
+            <Label Text="Правила для пользователей приложения" FontSize="Large" HorizontalTextAlignment="Center" FontAttributes="Bold"/>
+            <Label Text="Приложение предназначено для авторов и читателей. Для всех пользователей устанавливаются следующие обязательные правила, соблюдение которых необходимо для поддержания дружественной атмосферы в приложении." LineBreakMode="WordWrap"/>
+            <Label Text="Для авторов:"/>
+            <Label Text="· Запрещается публиковать тексты, пропагандирующие терроризм, экстремизм или другие запрещенные законом РФ организации и идеи." LineBreakMode="WordWrap" Margin="10,0,0,0"/>
+            <Label Text="· Запрещается пропагандировать войну, насилие или жестокость." LineBreakMode="WordWrap" Margin="10,0,0,0"/>
+            <Label Text="· Запрещается публикация материалов, содержащих детскую порнографию или сцены сексуального насилия." LineBreakMode="WordWrap" Margin="10,0,0,0"/>
+            <Label Text="Для читателей:"/>
+            <Label Text="· Запрещаются комментарии нецензурного характера." LineBreakMode="WordWrap" Margin="10,0,0,0"/>
+            <Label Text="· Недопустимы оскорбления авторов. Критика произведений должна быть обоснованной и объективной." LineBreakMode="WordWrap" Margin="10,0,0,0"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

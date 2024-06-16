@@ -31,13 +31,14 @@ namespace AuthorLM_API.Services
                 ContentPath = publishBookRequest.ContentPath
             };
             await SaveBookContentAsync(publishBookRequest);
-            await SaveBookCoverImageAsync
+            await SaveBookCoverImageAsync(publishBookRequest);
             return book;
         }
 
         private async Task SaveBookContentAsync(PublishBookViewModel publishBookRequest)
         {
-            var uniqueFileName = FileHelper.GetUniqueFileName(publishBookRequest.Content.FileName);
+            var uniqueFileName = string.Concat(Path.GetFileNameWithoutExtension(publishBookRequest.Title)
+                                , Path.GetExtension(publishBookRequest.Content.FileName));
 
             var uploads = Path.Combine(_environment.WebRootPath, "books", publishBookRequest.Title.ToString());
 
@@ -60,14 +61,24 @@ namespace AuthorLM_API.Services
                 publishBookRequest.CoverImagePath = Path.Combine(_environment.WebRootPath, "src", "images", "bookNoCover.png");
                 return;
             }
-            var uniqueFileName = FileHelper.GetUniqueFileName(publishBookRequest.CoverImage.FileName);
+            var uniqueFileName = string.Concat(Path.GetFileNameWithoutExtension(publishBookRequest.Title)
+                                , Path.GetExtension(publishBookRequest.Content.FileName));
 
             var uploads = Path.Combine(_environment.WebRootPath, "books", publishBookRequest.Title.ToString());
 
             var filePath = Path.Combine(uploads, uniqueFileName);
 
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-            await publishBookRequest.CoverImage.CopyToAsync(new FileStream(filePath, FileMode.Create));
+            int height = 400;
+            int width = 300;
+            System.Drawing.Image image = System.Drawing.Image.FromStream(publishBookRequest.CoverImage.OpenReadStream(), true, true);
+            var newImage = new System.Drawing.Bitmap(width, height);
+            using (var a = System.Drawing.Graphics.FromImage(newImage))
+            {
+                a.DrawImage(image, 0, 0, width, height);
+                newImage.Save(filePath);
+            }
+            //await publishBookRequest.CoverImage.CopyToAsync(new FileStream(filePath, FileMode.Create));
 
             publishBookRequest.CoverImagePath = filePath;
             return;

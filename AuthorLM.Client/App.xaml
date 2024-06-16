@@ -14,6 +14,7 @@
                         <Setter Property="TextColor" Value="White"/>
                         <Setter Property="FontSize" Value="24"/>
                         <Setter Property="Padding" Value="7,0"/>
+                        <Setter Property="Margin" Value="0,10,0,0"/>
                         <Setter Property="SemanticProperties.HeadingLevel" Value="Level1"/>
                         <Setter Property="HorizontalTextAlignment" Value="Start"/>
                         <Setter Property="Shadow">
@@ -56,12 +57,66 @@
                                     <TapGestureRecognizer Command="{Binding Path=BindingContext.NavigateToBook, Source={RelativeSource AncestorType={x:Type ContentPage}}}" CommandParameter="{Binding .}"/>
                                 </Border.GestureRecognizers>
                                 <VerticalStackLayout WidthRequest="100">
-                                    <Image WidthRequest="75" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="100" Aspect="AspectFit">
+                                    <Image
+                                        WidthRequest="75"
+                                        MaximumWidthRequest="75"
+                                        MinimumWidthRequest="75"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center"
+                                        HeightRequest="100"
+                                        MinimumHeightRequest="100"
+                                        MaximumHeightRequest="100"
+                                        Aspect="AspectFit">
                                         <Image.Source>
                                             <UriImageSource Uri="{Binding CoverImagePath}" CachingEnabled="False"/>
                                         </Image.Source>
                                     </Image>
-                                    <Label MinimumHeightRequest="25" Text="{Binding Title}" LineBreakMode="WordWrap"/>
+                                    <Label MinimumHeightRequest="25" MaximumHeightRequest="25" Text="{Binding Title}" LineBreakMode="TailTruncation"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </Border>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="bookColLibraryItemTemp">
+                        <Border Style="{StaticResource bookBorderMain}">
+                            <Border Style="{StaticResource bookBorderSecond}">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Path=BindingContext.NavigateToBook, Source={RelativeSource AncestorType={x:Type TabbedPage}}}" CommandParameter="{Binding .}"/>
+                                </Border.GestureRecognizers>
+                                <Border.Behaviors>
+                                    <toolkit:TouchBehavior
+                                        DefaultAnimationDuration="300"
+                                        DefaultAnimationEasing="{x:Static Easing.BounceOut}"
+                                        DefaultBackgroundColor="#cbb3b3"
+                                        PressedBackgroundColor="Gray"/>
+                                </Border.Behaviors>
+                                <VerticalStackLayout HorizontalOptions="Fill">
+                                    <HorizontalStackLayout Spacing="10">
+                                        <Border>
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="8"/>
+                                            </Border.StrokeShape>
+                                            <Image
+                                        WidthRequest="120"
+                                        MaximumWidthRequest="120"
+                                        MinimumWidthRequest="120"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center"
+                                        HeightRequest="160"
+                                        MinimumHeightRequest="160"
+                                        MaximumHeightRequest="160"
+                                        Aspect="AspectFit">
+                                                <Image.Source>
+                                                    <UriImageSource Uri="{Binding CoverImagePath}" CachingEnabled="False"/>
+                                                </Image.Source>
+                                            </Image>
+                                        </Border>
+                                        <VerticalStackLayout VerticalOptions="Start">
+                                            <Label FontAttributes="Bold" FontSize="Large" MinimumHeightRequest="25" MaximumHeightRequest="25" Text="{Binding Title}" LineBreakMode="TailTruncation"/>
+                                            <Label Opacity="0.75" FontSize="Subtitle" MinimumHeightRequest="25" MaximumHeightRequest="25" Text="{Binding Author.Username}" LineBreakMode="TailTruncation"/>
+                                        </VerticalStackLayout>
+                                    </HorizontalStackLayout>
+                                    <BoxView Color="Gray" HeightRequest="2" HorizontalOptions="Fill" Margin="5"/>
                                 </VerticalStackLayout>
                             </Border>
                         </Border>

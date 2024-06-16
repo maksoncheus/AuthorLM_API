@@ -25,9 +25,39 @@
                         </Label>
                         <Label Text="{Binding Book.Genre.Name}"/>
                         <Label Text="{Binding Book.PublicationDate}"/>
-                        <Picker Title="Добавить в библиотеку" WidthRequest="200"></Picker>
+                        <HorizontalStackLayout WidthRequest="200">
+                            <Picker Title="Добавить в библиотеку" WidthRequest="160" ItemDisplayBinding="{Binding Action}" SelectedIndex="{Binding SelectedEntryIndex}" ItemsSource="{Binding Entries}" SelectedItem="{Binding SelectedEntry}"/>
+                            <Border HeightRequest="25" WidthRequest="25" BackgroundColor="Purple" IsVisible="{Binding SelectedEntry, Converter={toolkit:IsNotNullConverter}}">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="5"/>
+                                </Border.StrokeShape>
+                                <Border.Behaviors>
+                                    <toolkit:TouchBehavior
+DefaultAnimationDuration="250"
+DefaultAnimationEasing="{x:Static Easing.CubicInOut}"
+                                        
+                                     PressedBackgroundColor="MediumPurple"/>
+                                </Border.Behaviors>
+                                <ImageButton Source="cross.svg" WidthRequest="25" HeightRequest="25" Command="{Binding DeleteBookFromLibrary}">
+                                    <ImageButton.Behaviors>
+                                        <toolkit:IconTintColorBehavior TintColor="Black"/>
+                                        <toolkit:TouchBehavior
+                DefaultAnimationDuration="100"
+                DefaultAnimationEasing="{x:Static Easing.CubicInOut}"
+                PressedOpacity="0.6"
+                PressedScale="0.5" />
+                                    </ImageButton.Behaviors>
+                                </ImageButton>
+                            </Border>
+
+
+                        </HorizontalStackLayout>
                     </VerticalStackLayout>
                 </HorizontalStackLayout>
+                <VerticalStackLayout>
+                    <Label Text="Описание" Opacity="0.6" FontSize="Large"/>
+                    <Label Text="{Binding Book.Description}"/>
+                </VerticalStackLayout>
                 <BoxView Color="Gray"  HeightRequest="2" HorizontalOptions="Fill" Margin="1"/>
                 <VerticalStackLayout HorizontalOptions="Center">
                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
@@ -63,7 +93,7 @@
                     <Label Text="Нравится"/>
                 </VerticalStackLayout>
                 <BoxView Color="Gray"  HeightRequest="2" HorizontalOptions="Fill" Margin="1"/>
-                <Button Text="Читать" TextColor="White" BackgroundColor="#cc00ff" Opacity="0.75"></Button>
+                <Button Text="Читать" Command="{Binding OpenBook}" CommandParameter="{Binding Book.Id}" TextColor="White" BackgroundColor="#cc00ff" Opacity="0.75"></Button>
                 <Border Padding="5" HeightRequest="100">
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="10"/>
@@ -80,10 +110,10 @@
                                     <RoundRectangle CornerRadius="10"/>
                                 </Border.StrokeShape>
                                 <VerticalStackLayout>
-                                    <HorizontalStackLayout>
-                                        <HorizontalStackLayout.GestureRecognizers>
+                                    <FlexLayout>
+                                        <FlexLayout.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding BindingContext.ToProfile, Source={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContentPage}}}" CommandParameter="{Binding Author.Id}"/>
-                                        </HorizontalStackLayout.GestureRecognizers>
+                                        </FlexLayout.GestureRecognizers>
                                         <Border BackgroundColor="Wheat" StrokeThickness="0" WidthRequest="40" HeightRequest="40" VerticalOptions="Start">
                                             <Border.StrokeShape>
                                                 <RoundRectangle CornerRadius="90"/>
@@ -94,11 +124,12 @@
                                                 </Image.Source>
                                             </Image>
                                         </Border>
-                                        <VerticalStackLayout Margin="7,0,0,0">
+                                        <VerticalStackLayout Margin="7,0,0,0" FlexLayout.Grow="1">
                                             <Label Text="{Binding Path = Author.Username}" FontAttributes="Bold"/>
                                             <Label Text="{Binding Path = TimeStamp}" FontAttributes="Italic" FontSize="Small" Opacity="0.8"/>
                                         </VerticalStackLayout>
-                                    </HorizontalStackLayout>
+                                        <Button Text="Удалить" BackgroundColor="Purple" HeightRequest="30" WidthRequest="50" Padding="0" IsVisible="{Binding BindingContext.IsAdmin, Source={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContentPage}}}" Command="{Binding BindingContext.RemoveComment, Source={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContentPage}}}" CommandParameter="{Binding Id}"/>
+                                    </FlexLayout>
                                     <Label Margin="0,4,0,0" Text="{Binding Path = Text}" LineBreakMode="WordWrap"/>
                                 </VerticalStackLayout>
                             </Border>

@@ -10,6 +10,7 @@ namespace AuthorLM.Client
         protected override void OnCreate(Bundle savedInstanceState)
         {
             new ImageCropper.Maui.Platform().Init(this);
+            Window.SetNavigationBarColor(Android.Graphics.Color.Rgb(162, 118, 118));
             base.OnCreate(savedInstanceState);
         }
     }

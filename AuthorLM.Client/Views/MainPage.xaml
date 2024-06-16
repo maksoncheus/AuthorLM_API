@@ -8,17 +8,7 @@
              NavigationPage.HasNavigationBar="False">
     <Grid>
         <toolkit:LazyView x:Name="lazyViewMainPage" x:TypeArguments="local:MainPageLazyView"/>
-        <Grid BackgroundColor="#bfa0a0">
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Setter Property="IsVisible" Value="False"/>
-                    <Style.Triggers>
-                        <DataTrigger TargetType="Grid" Binding="{Binding Books.Count}" Value="0">
-                            <Setter Property="IsVisible" Value="True"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
+        <Grid BackgroundColor="#bfa0a0" IsVisible="{Binding IsInitialized}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.1*"/>
                 <RowDefinition Height="0.25*"/>

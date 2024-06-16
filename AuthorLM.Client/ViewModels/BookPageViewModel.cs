@@ -1,4 +1,5 @@
-﻿using AuthorLM.Client.Services;
+﻿using AuthorLM.Client.Models;
+using AuthorLM.Client.Services;
 using CommunityToolkit.Maui.Alerts;
 using DbLibrary.Entities;
 using System;
@@ -19,11 +20,73 @@ namespace AuthorLM.Client.ViewModels
         private readonly ApiCallService _apiCallService;
         public int bookId;
         private bool _isLiked;
-
+        private bool _canDelete = false;
+        private ObservableCollection<BookLibraryEntryModel> _entries = new()
+        {
+            new() {EntryName = "Reading", Action = "Читаю"},
+            new() {EntryName = "Read", Action = "Прочитано"},
+            new() {EntryName = "Favorite", Action = "Избранное"}
+        };
+        private BookLibraryEntryModel? _entry = null;
+        public bool CanDelete
+        {
+            get => _canDelete;
+            set
+            {
+                _canDelete = value;
+                OnPropertyChanged();
+            }
+        }
+        public bool IsAdmin
+        {
+            get => _accountService.IsAdmin;
+        }
         public override async Task OnNavigatingTo(object? parameter)
         {
             Task t = new Task(() => { Initialize((int)parameter); });
             t.Start();
+        }
+        private int _selectedEntryIndex;
+        public int SelectedEntryIndex
+        {
+            get => _selectedEntryIndex;
+            set
+            {
+                _selectedEntryIndex = value;
+                OnPropertyChanged();
+            }
+        }
+        public BookLibraryEntryModel? SelectedEntry
+        {
+            get => _entry;
+            set
+            {
+                if (_entry == value) return;
+                if (_accountService.IsLoggedIn)
+                {
+                    if (value == null)
+                    {
+                        _entry = null;
+                        _apiCallService.RemoveBookFromLibrary(bookId);
+                    }
+                    else
+                    {
+                        _entry = value;
+                        _apiCallService.AddBookToLibrary(bookId, value.EntryName.ToLower());
+                    }
+                }
+                else Toast.Make("Сначала авторизуйтесь!").Show();
+                OnPropertyChanged();
+            }
+        }
+        public ObservableCollection<BookLibraryEntryModel> Entries
+        {
+            get => _entries;
+            set
+            {
+                _entries = value;
+                OnPropertyChanged();
+            }
         }
         public bool IsLiked
         {
@@ -44,9 +107,20 @@ namespace AuthorLM.Client.ViewModels
                 OnPropertyChanged();
             }
         }
+        private Command _deleteBookFromLibrary;
+        public Command DeleteBookFromLibrary
+        {
+            get => _deleteBookFromLibrary ??= new Command(
+                async () =>
+                {
+                    await Task.Delay(500);
+                    SelectedEntry = null;
+                });
+        }
+        private Command _postComment;
         public Command PostComment
         {
-            get => new Command( async()
+            get => _postComment ??= new Command(async ()
                 =>
             {
 
@@ -56,7 +130,7 @@ namespace AuthorLM.Client.ViewModels
                     return;
                 }
                 string commentText = _commentText;
-                
+
                 if (!_accountService.IsLoggedIn)
                 {
                     await Toast.Make("Для выполнения данного действия вам необходимо авторизоваться").Show();
@@ -64,7 +138,7 @@ namespace AuthorLM.Client.ViewModels
                 }
                 await _apiCallService.PostComment(bookId, _commentText);
                 CommentText = string.Empty;
-            Refresh.Execute(null);
+                Refresh.Execute(null);
             });
         }
         public Command SetLike
@@ -113,9 +187,21 @@ namespace AuthorLM.Client.ViewModels
             }
             IsLiked = false;
         }
+        private async void GetEntry(int id)
+        {
+            if (_accountService.IsLoggedIn)
+            {
+                string entry = await _apiCallService.GetLibraryEntry(id);
+                if (entry != "none")
+                {
+                    SelectedEntry = Entries.FirstOrDefault(e => e.EntryName.ToLower() == entry);
+                }
+            }
+        }
+
         public Command ToProfile
         {
-            get => new(async (id) =>  await _navigationService.NavigateToProfilePage((int)id));
+            get => new(async (id) => await _navigationService.NavigateToProfilePage((int)id));
         }
         private async void Initialize(int param)
         {
@@ -125,6 +211,7 @@ namespace AuthorLM.Client.ViewModels
                 GetIsLiked(bookId);
                 FindBookById(bookId);
                 LoadComments(bookId);
+                GetEntry(bookId);
             });
         }
         private async Task _init(int param)
@@ -171,6 +258,36 @@ namespace AuthorLM.Client.ViewModels
                 _book = value;
                 OnPropertyChanged();
             }
+        }
+        private Command _removeComment;
+        public Command RemoveComment
+        {
+            get => _removeComment ??= new(async (id) =>
+            {
+                HttpResponseMessage response = await _apiCallService.RemoveComment((int)id);
+                if (!response.IsSuccessStatusCode)
+                {
+                    await Toast.Make("Не удалось удалить комментарий").Show();
+                    return;
+                }
+                await Toast.Make("Комментарий успешно удален").Show();
+                Comments.Remove(Comments.First(c => c.Id == (int)id));
+            });
+        }
+        private Command _openBook;
+        public Command OpenBook
+        {
+            get => _openBook ??= new(async (id) =>
+            {
+                if (!_accountService.IsLoggedIn)
+                {
+                    await Toast.Make("Читать книги могут только авторизованные пользователи").Show();
+                    return;
+                }
+                await Permissions.RequestAsync<Permissions.StorageRead>();
+                await Permissions.RequestAsync<Permissions.StorageWrite>();
+                await _navigationService.NavigateToReader(id);
+            });
         }
         private ObservableCollection<Comment> _comments;
         public ObservableCollection<Comment> Comments

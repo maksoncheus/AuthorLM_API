@@ -29,8 +29,8 @@ IsRefreshing="{Binding IsRefreshing}">
                 <Label Text="Контактный адрес эл. почты" FontSize="Large" Margin="0,15,0,0"/>
                 <Entry Text="{Binding User.EmailAddress}" FontSize="Large"/>
                 <Label Text="Кратко о себе" FontSize="Large" Margin="0,15,0,0"/>
-                <Entry Text="{Binding User.Status}" Placeholder="Расскажите, что у вас нового" MaxLength="50" FontSize="Large"/>
-                <Label HorizontalOptions="End" Margin="0" Text="{Binding User.Status.Length, StringFormat='{0}/50'}"/>
+                <Entry Text="{Binding Status}" Placeholder="Расскажите, что у вас нового" MaxLength="50" FontSize="Large"/>
+                <Label HorizontalOptions="End" Margin="0" Text="{Binding Status.Length, StringFormat='{0}/50'}"/>
                 <FlexLayout>
                     <Button Text="Сохранить" Command="{Binding ChangeDetails}" HorizontalOptions="Start" FlexLayout.Grow="1" BackgroundColor="Purple" BorderColor="MediumPurple"/>
                     <Button Command="{Binding ChangePassword}" Text="Изменить пароль" BackgroundColor="Red"/>

@@ -94,7 +94,7 @@ namespace AuthorLM_API.Controllers
                             {
                                 _context.Comments.Remove(comment);
                                 await _context.SaveChangesAsync();
-                                return Ok("Comment removed succesfully");
+                                return Ok("Комментарий успешно удален");
                             }
                             catch (Exception ex)
                             {
@@ -103,7 +103,7 @@ namespace AuthorLM_API.Controllers
                         }
                     }
                 }
-                return BadRequest("Comment is not found");
+                return BadRequest("Комментарий не найден");
             }
             catch(Exception ex)
             {

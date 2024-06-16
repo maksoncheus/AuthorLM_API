@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ImageCropper;
 using CommunityToolkit.Maui.Core;
+using Newtonsoft.Json;
 
 namespace AuthorLM.Client.ViewModels
 {
@@ -21,6 +22,16 @@ namespace AuthorLM.Client.ViewModels
         private readonly IPopupService _popup;
         private User _user;
         private bool _isRefreshing;
+        private bool _canDelete;
+        public bool CanDelete
+        {
+            get => _canDelete;
+            set
+            {
+                _canDelete = value;
+                OnPropertyChanged();
+            }
+        }
         public override Task OnNavigatingTo(object? parameter)
         {
             Task.Run(_init);
@@ -29,6 +40,24 @@ namespace AuthorLM.Client.ViewModels
         private async Task _init()
         {
             User = await _callService.GetDetails();
+            CanDelete = User.Role.Name != "Admin";
+            Status = User?.Status;
+        }
+        private Command _delete;
+        public Command Delete
+        {
+            get => _delete ??= new(async () =>
+            {
+                HttpResponseMessage response = await _callService.RemoveProfile(User.Id);
+                if (!response.IsSuccessStatusCode)
+                {
+                    await Toast.Make("Не удалось удалить профиль").Show();
+                    return;
+                }
+                await Toast.Make("Профиль удален").Show();
+                _accountService.LogOut();
+                await _navigation.NavigateToRoot();
+            });
         }
         public User User
         {
@@ -40,6 +69,19 @@ namespace AuthorLM.Client.ViewModels
                 _user = value;
                 OnPropertyChanged();
                 _user.PathToPhoto = path;
+                OnPropertyChanged();
+            }
+        }
+        private string? _status;
+        public string? Status
+        {
+            get
+            {
+                return _status;
+            }
+            set
+            {
+                _status = value;
                 OnPropertyChanged();
             }
         }
@@ -82,7 +124,7 @@ namespace AuthorLM.Client.ViewModels
                                 await Toast.Make("Файл должен быть больше 150px в ширину и высоту!").Show();
                                 return;
                             }
-                            if (new FileInfo(result.FullPath).Length > 3145728*8)
+                            if (new FileInfo(result.FullPath).Length > 3145728 * 8)
                             {
                                 await Toast.Make("Размер файла не должен превышать 3МБ!").Show();
                                 return;
@@ -110,7 +152,7 @@ namespace AuthorLM.Client.ViewModels
                                         return;
                                     }
                                 },
-                                Failure = async() =>
+                                Failure = async () =>
                                 {
                                     await Toast.Make("Выберите файл").Show();
                                 }
@@ -136,8 +178,19 @@ namespace AuthorLM.Client.ViewModels
         {
             get => new(async () =>
             {
-                HttpResponseMessage msg = await _callService.ChangeDetails(User.Username, User.EmailAddress, User.Status);
-                await Toast.Make(await msg.Content.ReadAsStringAsync()).Show();
+                HttpResponseMessage msg = await _callService.ChangeDetails(User.Username, User.EmailAddress, Status);
+                if(!msg.IsSuccessStatusCode)
+                {
+                    await Toast.Make(await msg.Content.ReadAsStringAsync()).Show();
+                    return;
+                }
+                string responseContent = await msg.Content.ReadAsStringAsync();
+                var def = new { token = "", isAdmin = false };
+                var result = JsonConvert.DeserializeAnonymousType(responseContent, def);
+                _accountService.LogIn(result.token, result.isAdmin);
+                
+                await Toast.Make("Данные успешно обновлены!").Show();
+                await _navigation.NavigateBack();
             });
         }
         public EditProfileViewModel(AccountService accountService, ApiCallService callService, NavigationService navigation, IPopupService popup)

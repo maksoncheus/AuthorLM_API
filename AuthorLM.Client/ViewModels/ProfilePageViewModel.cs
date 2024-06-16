@@ -1,4 +1,5 @@
 ﻿using AuthorLM.Client.Services;
+using CommunityToolkit.Maui.Alerts;
 using DbLibrary.Entities;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,16 @@ namespace AuthorLM.Client.ViewModels
             Refresh.Execute(null);
             return base.OnNavigatedTo();
         }
+        private bool _canDelete;
+        public bool CanDelete
+        {
+            get => _canDelete;
+            set
+            {
+                _canDelete = value;
+                OnPropertyChanged();
+            }
+        }
         public User User
         {
             get => _user;
@@ -41,9 +52,6 @@ namespace AuthorLM.Client.ViewModels
                 string path = value.PathToPhoto;
                 value.PathToPhoto = "";
                 _user = value;
-                OnPropertyChanged();
-                string path = _user.PathToPhoto;
-                _user.PathToPhoto = "";
                 OnPropertyChanged();
                 _user.PathToPhoto = path;
                 OnPropertyChanged();
@@ -105,26 +113,37 @@ namespace AuthorLM.Client.ViewModels
             Task.Run(() => _init((int)parameter));
             return base.OnNavigatingTo(parameter);
         }
-        public override Task OnNavigatedTo()
-        {
-            if(_user?.Id != null)
-                Refresh.Execute(null);
-            return base.OnNavigatedTo();
-        }
         private async Task _init(int param)
         {
             User = await _callService.GetUserById(param);
             IEnumerable<Book> books = await _callService.GetAllBooks();
             Books = new(books.Where(b => b.Author.Id == User.Id));
-            if(_accountService.IsLoggedIn)
+            IsMyAccount = false;
+
+            if (_accountService.IsLoggedIn)
             {
-                if((await _callService.GetDetails()).Id == User.Id)
+                User currentUser = await _callService.GetDetails();
+                if (currentUser.Id == User.Id)
                 {
                     IsMyAccount = true;
+                }
+                CanDelete = !IsMyAccount && currentUser.Role.Name == "Admin";
+            }
+        }
+        private Command _delete;
+        public Command Delete
+        {
+            get => _delete ??= new(async () =>
+            {
+                HttpResponseMessage response = await _callService.RemoveProfile(User.Id);
+                if (!response.IsSuccessStatusCode)
+                {
+                    await Toast.Make("Не удалось удалить профиль").Show();
                     return;
                 }
-            }
-            IsMyAccount = false;
+                await Toast.Make("Профиль удален").Show();
+                await _navigationService.NavigateToRoot();
+            });
         }
         public ProfilePageViewModel(AccountService accountService, ApiCallService callService, NavigationService navigationService)
         {

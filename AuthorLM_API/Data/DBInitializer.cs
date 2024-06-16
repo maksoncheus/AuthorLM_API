@@ -4,18 +4,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuthorLM_API.Data
 {
+    /// <summary>
+    /// Ининциализатор базы данных. Установка ролей, пользователя-администратора.
+    /// </summary>
     public class DBInitializer
     {
         private static readonly List<string> _roles = new List<string>()
             {
                 "User",
-                "Admin",
-                "Guest"
+                "Admin"
             };
-        private static readonly string _adminUsername = "SuperMegaAdmin";
+        private static readonly string _adminUsername = "Администратор";
         private static readonly string _adminEmail = "lyubaAdmin@mail.ru";
-        private static readonly string _adminPassword = "adminSecurePassword";
-
+        private static readonly string _adminPassword = "adminPassword";
+        /// <summary>
+        /// Основной метод инициализации
+        /// </summary>
+        /// <param name="context">Контекст приложения</param>
+        /// <param name="environment">Веб-хост</param>
         public static async Task InitializeAsync(ApplicationContext context, IWebHostEnvironment environment)
         {
             await AddRolesAsync(context);
@@ -23,6 +29,11 @@ namespace AuthorLM_API.Data
             await DeleteFoldersWithNoBooks(context, environment);
             await SetPhotoPaths(context, environment);
         }
+        /// <summary>
+        /// Установка путей к "аватару" профиля у пользователей, у которых это поле пустое.
+        /// </summary>
+        /// <param name="context">Контекст приложения</param>
+        /// <param name="environment">Веб-хост</param>
         private static async Task SetPhotoPaths(ApplicationContext context, IWebHostEnvironment environment)
         {
             foreach(User user in context.Users)
@@ -33,6 +44,10 @@ namespace AuthorLM_API.Data
             }
             await context.SaveChangesAsync();
         }
+        /// <summary>
+        /// Добавить роли в БД, если они ещё не созданы.
+        /// </summary>
+        /// <param name="context">Контекст приложения</param>
         private static async Task AddRolesAsync(ApplicationContext context)
         {
             foreach (string role in _roles)
@@ -44,6 +59,10 @@ namespace AuthorLM_API.Data
             }
             await context.SaveChangesAsync();
         }
+        /// <summary>
+        /// Добавить пользователя-администратора, если его ещё нет.
+        /// </summary>
+        /// <param name="context">Контекст приложения</param>
         private static async Task AddAdminUserAsync(ApplicationContext context)
         {
             if (!context.Users.Any(x => x.Username == _adminUsername))
@@ -54,18 +73,25 @@ namespace AuthorLM_API.Data
                 {
                     Username = _adminUsername,
                     Password = adminpassword,
+                    PathToPhoto = string.Empty,
                     Role = role,
+                    Status = string.Empty,
                     EmailAddress = _adminEmail
                 });
             }
             await context.SaveChangesAsync();
         }
-        private static async Task DeleteFoldersWithNoBooks(ApplicationContext context, IWebHostEnvironment _environment)
+        /// <summary>
+        /// Удалить папки, в которых нет книг.
+        /// </summary>
+        /// <param name="context">Контекст приложения</param>
+        /// <param name="environment">Веб-хост</param>
+        private static async Task DeleteFoldersWithNoBooks(ApplicationContext context, IWebHostEnvironment environment)
         {
-            List<string> directories = Directory.EnumerateDirectories(Path.Combine(_environment.WebRootPath, "books")).ToList();
+            List<string> directories = Directory.EnumerateDirectories(Path.Combine(environment.WebRootPath, "books")).ToList();
             foreach (string directory in directories)
             {
-                if (await context.Books.FirstOrDefaultAsync(b => b.Title == directory.Replace(Path.Combine(_environment.WebRootPath, "books") + "\\", "")) == null)
+                if (await context.Books.FirstOrDefaultAsync(b => b.Title == directory.Replace(Path.Combine(environment.WebRootPath, "books") + "\\", "")) == null)
                 {
                     Directory.Delete(directory, true);
                 }

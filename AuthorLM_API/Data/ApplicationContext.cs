@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuthorLM_API.Data
 {
+    /// <summary>
+    /// Контекст данных приложения. Используется для взаимодействия с базой данных.
+    /// </summary>
     public class ApplicationContext : DbContext
     {
         public DbSet<User> Users { get; set; }
@@ -10,7 +13,9 @@ namespace AuthorLM_API.Data
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Chapter> Chapters { get; set; }
         public DbSet<Like> Likes { get; set; }
+        public DbSet<Progress> Progresses { get; set; }
         public DbSet<UserReadingBooks> UserReadingBooks { get; set; }
         public DbSet<UserReadBooks> UserReadBooks { get; set; }
         public DbSet<UserFavoriteBooks> UserFavoriteBooks { get; set; }

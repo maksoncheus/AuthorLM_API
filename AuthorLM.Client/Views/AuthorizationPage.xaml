@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="AuthorLM.Client.Views.AuthorizationPage"
              NavigationPage.HasNavigationBar="False"
              Title="Authorization">
     <Grid RowDefinitions="0.07*,0.93*">
         <FlexLayout Margin="0,0,0,0" Grid.Row="0" AlignItems="Center" BackgroundColor="#a27676">
-            <ImageButton FlexLayout.Grow="1" Margin="3,0,0,0" Command="{Binding Back}" Source="back.svg" WidthRequest="60" HeightRequest="60" VerticalOptions="Center" HorizontalOptions="Start"/>
+            <ImageButton FlexLayout.Grow="1" Margin="3,0,0,0" Command="{Binding Back}" Source="back.svg" WidthRequest="60" HeightRequest="60" VerticalOptions="Center" HorizontalOptions="Start">
+                <ImageButton.Behaviors>
+                    <toolkit:TouchBehavior
+    DefaultAnimationDuration="10"
+    DefaultAnimationEasing="{x:Static Easing.CubicInOut}"
+    PressedOpacity="0.6"
+    PressedScale="0.5"
+        />
+                </ImageButton.Behaviors>
+            </ImageButton>
         </FlexLayout>
         <VerticalStackLayout Padding="25" Spacing="5" BackgroundColor="#bfa0a0" Grid.Row="1">
             <Image Source="logo.png" HeightRequest="200" WidthRequest="200"/>
